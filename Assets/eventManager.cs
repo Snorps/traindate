@@ -52,25 +52,28 @@ public class eventManager : MonoBehaviour
         }
           
     }
-    /*
-    // Base event class
+    
+    // Audio event class
     public class AudioEvent : BaseEvent
     {
+        private string file;
 
-        private string audioFile;
+        private bool blocking;
 
         private GameObject Audio;
 
         // constructor/destructor
-        public AudioEvent(string file)
+        public AudioEvent(string filePath, bool block = false)
         {
 
 
-            audioFile = file;
+            file = filePath;
 
-            Audio = GameObject.FindGameObjectWithTag("AUDIO_HANDLER");
+            blocking = block;
 
+            Audio = GameObject.FindGameObjectWithTag("AudioHandler");
 
+            End = false;
         }
 
         ~AudioEvent()
@@ -84,13 +87,18 @@ public class eventManager : MonoBehaviour
         // begin is called when event starts
         public override void begin()
         {
+            // play audio from file
 
+            if (!blocking)
+            {
+                End = true;
+            }
         }
 
         // OnMouse Down is called when left mouse button is pressed
         public override void OnMouseDown()
         {
-
+            End = true;
         }
 
         // returns next event
@@ -100,7 +108,7 @@ public class eventManager : MonoBehaviour
         }
 
     }
-    */
+    
 
     // Base event class
     public class CharacterChangeEvent : BaseEvent
@@ -300,39 +308,52 @@ public class eventManager : MonoBehaviour
         string dialog = "";
         char character;
 
-        // while not at end of file
-        while (reader.Peek() > -1)
+        bool end = false;
+
+        while (reader.Peek() > -1 && !end)
         {
 
-            // read next character
-            character = (char)reader.Read();
+            character = skipWhiteSpace(reader);
 
-            // check for symbols
-            //
-            // if end of event symbol
-            if (character == '~')
+            dialog += character;
+
+            // while not at end of file
+            while (reader.Peek() > -1)
             {
 
-                //add current dialog to list then break out loop
-                DialogList.Add(dialog);
-                break;
+                // read next character
+                character = (char)reader.Read();
+
+                // check for symbols
+                //
+                // if end of event symbol
+                if (character == '~')
+                {
+
+                    //add current dialog to list then break out loop
+                    DialogList.Add(dialog);
+                    end = true;
+                    break;
+                }
+
+                // if end of dialog box symbol
+                else if (character == '|')
+                {
+
+                    // add current dialog to list then set current dialog to empty
+                    DialogList.Add(dialog);
+                    dialog = "";
+                    break;
+                }
+
+                else
+                {
+
+                    // else add character to dialog string
+                    dialog += character;
+                }
             }
 
-            // if end of dialog box symbol
-            else if (character == '|')
-            {
-
-                // add current dialog to list then set current dialog to empty
-                DialogList.Add(dialog);
-                dialog = "";
-            }
-
-            else
-            {
-
-                // else add character to dialog string
-                dialog += character;
-            }
         }
         
       
@@ -340,6 +361,76 @@ public class eventManager : MonoBehaviour
 
         // create and add dialog event to the event list
         eventList.Add(new DialogEvent(DialogList));
+
+    }
+
+    private void CreateAudioEvent(StreamReader reader)
+    {
+
+        string filePath = "Assets/Resources/Audio/";
+
+        bool blocking = false;
+        bool blockCheck = false;
+
+        char character;
+
+        character = skipWhiteSpace(reader):
+
+        filePath += character;
+
+        while(reader.Peek() > -1)
+        {
+
+            character = (char)reader.Read();
+
+            if (character == '|')
+            {
+                blockCheck = true;
+                break;
+            }
+            else if (character == '~')
+            {
+                blockCheck = false;
+                break;
+            }
+        }
+
+        if (blockCheck)
+        {
+
+            string buffer = "";
+
+            character = skipWhiteSpace(reader);
+
+            buffer += character;
+
+            while (reader.Peek() > -1)
+            {
+
+                character = (char)reader.Read();
+
+                if (character == '~')
+                {
+                    break;
+                }
+                else
+                {
+                    buffer += character;
+                }
+            }
+
+            if (buffer.ToUpper() == "TRUE")
+            {
+                blocking = true;
+            }
+            else
+            {
+                blocking = false;
+            }
+        }
+
+
+        eventList.Add(new AudioEvent(filePath, blocking));
 
     }
 
@@ -352,10 +443,12 @@ public class eventManager : MonoBehaviour
 
             character = (char)reader.Read();
 
-            if (character != ' ')
+            if (character == ' ' || character == '\n' || character == '\t' || character == '\r')
             {
-                break;
+                continue;
             }
+
+            break;
         }
         return character;
     }
@@ -466,18 +559,11 @@ public class eventManager : MonoBehaviour
         string file = "Assets/Resources/Events/";
         char character;
 
-        while (reader.Peek() > -1)
-        {
+       
 
-            character = (char)reader.Read();
+        character = skipWhiteSpace(reader);
 
-            if (character != ' ')
-            {
-                file += character;
-                break;
-            }
-        }
-
+        file += character;
 
         while (reader.Peek() > -1)
         {
