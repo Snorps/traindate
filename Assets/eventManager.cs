@@ -548,11 +548,6 @@ public class eventManager : MonoBehaviour
 
     }
 
-    private void CreateAudioEvent(StreamReader reader)
-    {
-
-    }
-
     private void AddEventFile(StreamReader reader)
     {
 
