@@ -13,3 +13,15 @@ more commenting
 
 
 		[END] [DIALOG]Nik is gay~
+		
+		{maybe instead of effects it should just add events to front of events list in manager}
+		
+		Decision syntax
+		
+		[Decision]  
+						//can have multiple effects just type all effects into the option//
+		//option 1// { [EFFECT] effectType, [DATA] data, [MESSAGE] message; [EFFECT] effectType, [DATA] data, [MESSAGE] message;}
+		//option 2// { [EFFECT] effectType, [DATA] data, [MESSAGE] message; [EFFECT] effectType, [DATA] data, [MESSAGE] message;}
+		[DECISIONEND]
+		
+		
