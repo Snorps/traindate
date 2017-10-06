@@ -101,6 +101,69 @@ public class eventManager : MonoBehaviour
 
     }
     */
+
+    // Base event class
+    public class CharacterChangeEvent : BaseEvent
+    {
+
+        private string file;
+
+        private bool blocking;
+
+        private string charNum;
+
+        private GameObject UI;
+
+        // constructor/destructor
+        public CharacterChangeEvent(string filePath, string characterNum, bool block = false )
+        {
+            file = filePath;
+
+            blocking = block;
+
+            charNum = characterNum;
+
+            UI = GameObject.FindGameObjectWithTag("Canvas");
+
+            End = false;
+        }
+
+        ~CharacterChangeEvent()
+        {
+
+        }
+
+
+        // virtual methods for inheritance
+        //
+        // begin is called when event starts
+        public override void begin()
+        {
+
+            UI.GetComponent<UIhandler>().changeImageSprite(charNum, file);
+
+            if (!blocking)
+            {
+                End = true;
+            }
+
+        }
+
+        // OnMouse Down is called when left mouse button is pressed
+        public override void OnMouseDown()
+        {
+
+            End = true;
+        }
+
+        // returns next event
+        public override string nextEvent()
+        {
+            return nextEventList[0];
+        }
+
+    }
+
     public class DialogEvent : BaseEvent
     {
 
@@ -272,42 +335,123 @@ public class eventManager : MonoBehaviour
             }
         }
         
-        /*
-        // loop through all the data
-        for (int i = 0; i < data.Length; i++)
-        {
-            // check for symbols
-            //
-            // if end of event symbol
-            if (data[i] == '~')
-            {
+      
 
-                // add current dialog to list then break out loop
-                DialogList.Add(dialog);
-                break;
-                
-            }
-
-            // if end of dialog box symbol
-            else if (data[i] == '|')
-            {
-
-                // add current dialog to list then reset current dialog
-                DialogList.Add(dialog);
-                dialog = "";
-            }
-
-            // else add current data to dialog string
-            else
-            {
-
-                dialog = dialog + data[i];
-            }
-        }
-        */
 
         // create and add dialog event to the event list
         eventList.Add(new DialogEvent(DialogList));
+
+    }
+
+    private char skipWhiteSpace(StreamReader reader)
+    {
+        char character = '~';
+
+        while (reader.Peek() > -1)
+        {
+
+            character = (char)reader.Read();
+
+            if (character != ' ')
+            {
+                break;
+            }
+        }
+        return character;
+    }
+
+    private void CreateCharacterChangeEvent(StreamReader reader)
+    {
+
+        string filePath = "Assets/Resources/Characters/";
+        string charNum = "";
+        bool blocking = false;
+
+        char character;
+
+        character = skipWhiteSpace(reader);
+
+        charNum += character;
+
+        while (reader.Peek() > -1)
+        {
+
+            character = (char)reader.Read();
+
+            if (character == '|')
+            {
+                break;
+            }
+            else
+            {
+                charNum += character;
+            }
+            
+
+        }
+
+        character = skipWhiteSpace(reader);
+
+        filePath += character;
+
+        bool blockCheck = false;
+
+        while (reader.Peek() > -1)
+        {
+            character = (char)reader.Read();
+
+            if (character == '|')
+            {
+                blockCheck = true;
+                break;
+            }
+            else if(character == '~')
+            {
+                break;
+            }
+            else
+            {
+                filePath += character;
+            }
+
+        }
+
+        if (blockCheck)
+        {
+
+            string buffer = "";
+
+            character = skipWhiteSpace(reader);
+
+            buffer += character;
+
+            while (reader.Peek() > -1)
+            {
+
+                character = (char)reader.Read();
+
+                if (character == '~')
+                {
+                    break;
+                }
+                else
+                {
+                    buffer += character;
+                }
+            }
+
+            if (buffer.ToUpper() == "TRUE")
+            {
+                blocking = true;
+            }
+            else
+            {
+                blocking = false;
+            }
+        }
+
+
+        eventList.Add(new CharacterChangeEvent(filePath, charNum, blocking));
 
     }
 
@@ -319,7 +463,7 @@ public class eventManager : MonoBehaviour
     private void AddEventFile(StreamReader reader)
     {
 
-        string file = "";
+        string file = "Assets/Resources/Events/";
         char character;
 
         while (reader.Peek() > -1)

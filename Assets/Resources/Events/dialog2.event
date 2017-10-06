@@ -7,8 +7,10 @@ commeongdskajfldsjlkf
          
 		 [DIALOG]Crag is a swell dude~
 		 
-		   [EVENTFILE]Assets/Resources/Events/dialog1.event~
+		   [EVENTFILE]   dialog1.event~
+		   
+		   [CHARACTERLOAD]  characterName|  filePath.png|  TRUE~
 
 		 [DIALOG]mfmdksfmkdsjk|jfkdsjkfjdks|felix is super cool awesome sauce~
-	[EVENTFILE]Assets/Resources/Events/dialog2.event~
+	[EVENTFILE]   dialog2.event~
 	[END]
