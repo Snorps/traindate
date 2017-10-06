@@ -20,7 +20,11 @@ more commenting
 		
 		[Decision]  
 						//can have multiple effects just type all effects into the option//
-		//option 1// { [EFFECT] effectType, [DATA] data, [MESSAGE] message; [EFFECT] effectType, [DATA] data, [MESSAGE] message;}
+		//option 1// { 
+							[MESSAGE] message; 
+							[EFFECT] effectType, [DATA] data; 
+							[EFFECT] effectType, [DATA] data;
+					}
 		//option 2// { [EFFECT] effectType, [DATA] data, [MESSAGE] message; [EFFECT] effectType, [DATA] data, [MESSAGE] message;}
 		[DECISIONEND]
 		
