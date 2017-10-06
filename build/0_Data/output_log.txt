@@ -1,0 +1,40 @@
+Initialize engine version: 2017.1.0f3 (472613c02cf7)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GT 440 (ID=0xde0)
+    Vendor:   NVIDIA
+    VRAM:     979 MB
+    Driver:   21.21.13.7892
+Begin MonoManager ReloadAssembly
+Platform assembly: M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\UnityEngine.Timeline.dll (this message is harmless)
+Loading M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\UnityEngine.Timeline.dll into Unity Child Domain
+Platform assembly: M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\System.dll (this message is harmless)
+Platform assembly: M:\Unity\Projects\TrainDateUI-test\TrainDateUI-test\build\0_Data\Managed\System.Core.dll (this message is harmless)
+- Completed reload, in  0.103 seconds
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 5.162815 ms
+NullReferenceException: Object reference not set to an instance of an object
+  at UIhandler.Start () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+InvalidCastException: Cannot cast from source type to destination type.
+  at UIhandler.changeImageSprite (System.String imageName, System.String filePath) [0x00000] in <filename unknown>:0 
+  at UIhandler.Start () [0x00000] in <filename unknown>:0 
+ 
+(Filename:  Line: -1)
+
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 15b8 -> priority: 1 
+  Thread -> id: 146c -> priority: 1 
