@@ -327,10 +327,17 @@ public class eventManager : MonoBehaviour
         }
     }
 
-    private char readLine(StreamReader reader, ref string line)
+    private char readLine(StreamReader reader, ref string line, bool skipWhite = false)
     {
 
-        char character = '|';
+        char character = '~';
+
+        if (skipWhite)
+        {
+            line += skipWhiteSpace(reader);
+        }
+
+        
 
         while (reader.Peek() > -1)
         {
@@ -400,8 +407,7 @@ public class eventManager : MonoBehaviour
                     case "NAME":
                         name = "";
 
-                        name += skipWhiteSpace(reader);
-                        readLine(reader, ref name);
+                        readLine(reader, ref name, true);
                         break;
                     default:
                         break;
@@ -491,12 +497,7 @@ public class eventManager : MonoBehaviour
         char character;
 
 
-        // skip the whitespace
-        character = skipWhiteSpace(reader);
-
-        filePath += character;
-
-        character = readLine(reader, ref filePath);
+        character = readLine(reader, ref filePath, true);
 
 
         if (character == '|')
@@ -541,13 +542,7 @@ public class eventManager : MonoBehaviour
             // create buffer for getting data
             string buffer = "";
 
-
-            // skip the whitespace
-            character = skipWhiteSpace(reader);
-
-            buffer += character;
-
-            readLine(reader, ref buffer);
+            readLine(reader, ref buffer, true);
 
             /*
             // while there's data to read
@@ -635,13 +630,7 @@ public class eventManager : MonoBehaviour
 
         char character;
 
-
-        // skip the whitespace
-        character = skipWhiteSpace(reader);
-
-        charNum += character;
-
-        readLine(reader, ref charNum);
+        readLine(reader, ref charNum, true);
 
         /*
         // while there's data to read
@@ -670,12 +659,7 @@ public class eventManager : MonoBehaviour
 
         */
 
-        // skip the whitespace
-        character = skipWhiteSpace(reader);
-
-        filePath += character;
-
-        character = readLine(reader, ref filePath);
+        character = readLine(reader, ref filePath, true);
 
         bool blockCheck = false;
 
@@ -723,12 +707,7 @@ public class eventManager : MonoBehaviour
             // create buffer
             string buffer = "";
 
-            // skip the whitespace
-            character = skipWhiteSpace(reader);
-
-            buffer += character;
-
-            readLine(reader, ref buffer);
+            readLine(reader, ref buffer, true);
 
             /*
             // while there's data to read
