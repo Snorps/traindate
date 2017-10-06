@@ -682,6 +682,10 @@ public class eventManager : MonoBehaviour
                     Debug.Log("audioevent");
                     CreateAudioEvent(reader);
                     break;
+                case "CHARACTERLOAD":
+                    Debug.Log("characterLoadEvent");
+                    CreateCharacterChangeEvent(reader);
+                    break;
                 case "END":   // if end of file
                     Debug.Log("end of file");
                     endOfFile = true;
