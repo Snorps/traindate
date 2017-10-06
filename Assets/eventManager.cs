@@ -374,7 +374,7 @@ public class eventManager : MonoBehaviour
 
         char character;
 
-        character = skipWhiteSpace(reader):
+        character = skipWhiteSpace(reader);
 
         filePath += character;
 
