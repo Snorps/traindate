@@ -1,4 +1,5 @@
-[DIALOG]eat shit chicken dipper|Death to the whites|we didn't start the fire it was always burning sinc eht eworld's been turning~
+[DIALOG]     eat shit chicken dipper|  Death to the whites|
+  we didn't start the fire it was always burning sinc eht eworld's been turning~
 
 look I'm doing some commenting heh got 'em
 
@@ -6,7 +7,7 @@ look I'm doing some commenting heh got 'em
 
 more commenting
 
-[EVENTFILE]  Assets/Resources/Events/dialog2.event~
+[EVENTFILE]  dialog2.event~
 
 
 		[END] [DIALOG]Nik is gay~

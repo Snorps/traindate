@@ -52,25 +52,29 @@ public class eventManager : MonoBehaviour
         }
           
     }
-    /*
-    // Base event class
+    
+    // Audio event class
     public class AudioEvent : BaseEvent
     {
 
-        private string audioFile;
+        
+        private string file;
+        private bool blocking;
 
         private GameObject Audio;
 
         // constructor/destructor
-        public AudioEvent(string file)
+        public AudioEvent(string filePath, bool block = false)
         {
 
+            // set attributes
 
-            audioFile = file;
+            file = filePath;
+            blocking = block;
 
-            Audio = GameObject.FindGameObjectWithTag("AUDIO_HANDLER");
+            Audio = GameObject.FindGameObjectWithTag("AudioHandler");
 
-
+            End = false;
         }
 
         ~AudioEvent()
@@ -78,19 +82,28 @@ public class eventManager : MonoBehaviour
 
         }
 
-
-        // virtual methods for inheritance
-        //
         // begin is called when event starts
         public override void begin()
         {
 
+            // play audio from file
+
+
+            // check if event will block next event
+            if (!blocking)
+            {
+
+                // if not blocking end the event
+                End = true;
+            }
         }
 
         // OnMouse Down is called when left mouse button is pressed
         public override void OnMouseDown()
         {
 
+            // end the event
+            End = true;
         }
 
         // returns next event
@@ -100,7 +113,76 @@ public class eventManager : MonoBehaviour
         }
 
     }
-    */
+    
+
+    // Character Change event class
+    public class CharacterChangeEvent : BaseEvent
+    {
+
+        // attributes
+        private string file;
+        private string charNum;
+        private bool blocking;
+
+        private GameObject UI;
+
+        // constructor/destructor
+        public CharacterChangeEvent(string filePath, string characterNum, bool block = false )
+        {
+
+            // set attributes
+
+            file = filePath;
+            charNum = characterNum;
+            blocking = block;
+
+            UI = GameObject.FindGameObjectWithTag("Canvas");
+
+            End = false;
+        }
+
+        ~CharacterChangeEvent()
+        {
+
+        }
+
+
+        // begin is called when event starts
+        public override void begin()
+        {
+
+            // display character
+            UI.GetComponent<UIhandler>().changeImageSprite(charNum, file);
+
+
+            // check if event is blocking
+            if (!blocking)
+            {
+
+                // end the event
+                End = true;
+            }
+
+        }
+
+        // OnMouse Down is called when left mouse button is pressed
+        public override void OnMouseDown()
+        {
+
+            // end the event
+            End = true;
+        }
+
+        // returns next event
+        public override string nextEvent()
+        {
+            return nextEventList[0];
+        }
+
+    }
+
+
+    // dialog event class
     public class DialogEvent : BaseEvent
     {
 
@@ -190,6 +272,8 @@ public class eventManager : MonoBehaviour
     // Use this for initialisation
     void Start ()
     {
+
+        // set default values
         eventIndex = 0;
         nextEventIndex = 0;
         nextEventList.Add("Assets/Resources/Events/dialog1.event");
@@ -199,6 +283,8 @@ public class eventManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        // check if there is a current event
         if (currentEvent != null)
         {
 
@@ -221,13 +307,15 @@ public class eventManager : MonoBehaviour
         }
         else
         {
+
+            // if there's no event try loading new events
             LoadEvent();
         }
     }
 
     // create event types
     //
-    // Dialog event
+    // adds Dialog event to event list
     private void CreateDialogEvent(StreamReader reader)
     {
 
@@ -237,119 +325,380 @@ public class eventManager : MonoBehaviour
         string dialog = "";
         char character;
 
-        // while not at end of file
-        while (reader.Peek() > -1)
+        bool end = false;
+
+
+        // while file has data and not at end of event data
+        while (reader.Peek() > -1 && !end)
         {
 
-            // read next character
-            character = (char)reader.Read();
+            // skip the whitespace
+            character = skipWhiteSpace(reader);
 
-            // check for symbols
-            //
-            // if end of event symbol
-            if (character == '~')
+            dialog += character;
+
+
+            // while not at end of current dialog
+            while (reader.Peek() > -1)
             {
 
-                //add current dialog to list then break out loop
-                DialogList.Add(dialog);
-                break;
+                // read next character
+                character = (char)reader.Read();
+
+                // check for symbols
+                //
+                // if end of event symbol
+                if (character == '~')
+                {
+
+                    //add current dialog to list then exit loop
+                    DialogList.Add(dialog);
+                    end = true;
+                    break;
+                }
+
+                // if end of dialog box symbol
+                else if (character == '|')
+                {
+
+                    // add current dialog to list then set current dialog to empty
+                    DialogList.Add(dialog);
+                    dialog = "";
+                    break;
+                }
+
+                else
+                {
+
+                    // else add character to dialog string
+                    dialog += character;
+                }
             }
 
-            // if end of dialog box symbol
-            else if (character == '|')
-            {
-
-                // add current dialog to list then set current dialog to empty
-                DialogList.Add(dialog);
-                dialog = "";
-            }
-
-            else
-            {
-
-                // else add character to dialog string
-                dialog += character;
-            }
         }
         
-        /*
-        // loop through all the data
-        for (int i = 0; i < data.Length; i++)
-        {
-            // check for symbols
-            //
-            // if end of event symbol
-            if (data[i] == '~')
-            {
+      
 
-                // add current dialog to list then break out loop
-                DialogList.Add(dialog);
-                break;
-                
-            }
-
-            // if end of dialog box symbol
-            else if (data[i] == '|')
-            {
-
-                // add current dialog to list then reset current dialog
-                DialogList.Add(dialog);
-                dialog = "";
-            }
-
-            // else add current data to dialog string
-            else
-            {
-
-                dialog = dialog + data[i];
-            }
-        }
-        */
 
         // create and add dialog event to the event list
         eventList.Add(new DialogEvent(DialogList));
 
     }
 
+
+    // adds audio event to event list
     private void CreateAudioEvent(StreamReader reader)
     {
 
-    }
+        // create variables for making audio event
+        string filePath = "Assets/Resources/Audio/";
 
-    private void AddEventFile(StreamReader reader)
-    {
+        bool blocking = false;
+        bool blockCheck = false;
 
-        string file = "";
         char character;
 
-        while (reader.Peek() > -1)
+
+        // skip the whitespace
+        character = skipWhiteSpace(reader);
+
+        filePath += character;
+
+
+        // while there's data to read
+        while(reader.Peek() > -1)
         {
 
+            // read next character
             character = (char)reader.Read();
 
-            if (character != ' ')
+
+            // if end of line symbol
+            if (character == '|')
             {
-                file += character;
+
+                // do a blocking check and break out loop
+                blockCheck = true;
+                break;
+            }
+
+            // if end of event symbol
+            else if (character == '~')
+            {
+
+                // break out loop
+                blockCheck = false;
                 break;
             }
         }
 
 
+        // if checking for blocking
+        if (blockCheck)
+        {
+
+            // create buffer for getting data
+            string buffer = "";
+
+
+            // skip the whitespace
+            character = skipWhiteSpace(reader);
+
+            buffer += character;
+
+
+            // while there's data to read
+            while (reader.Peek() > -1)
+            {
+
+                // read next character
+                character = (char)reader.Read();
+
+                // if end of event symbol
+                if (character == '~')
+                {
+
+                    // exit loop
+                    break;
+                }
+                else
+                {
+
+                    // add character to buffer
+                    buffer += character;
+                }
+            }
+
+            // if blocking is true
+            if (buffer.ToUpper() == "TRUE")
+            {
+
+                // set blocking to true
+                blocking = true;
+            }
+
+            // else don't block event
+            else
+            {
+                blocking = false;
+            }
+        }
+
+
+        // add new Audio event to list
+        eventList.Add(new AudioEvent(filePath, blocking));
+
+    }
+
+
+    // function for skipping whitespace in file
+    private char skipWhiteSpace(StreamReader reader)
+    {
+
+        // set character to default value
+        char character = '~';
+
+        // while there's data to read
         while (reader.Peek() > -1)
         {
 
+            // read next character
             character = (char)reader.Read();
 
-            if (character == '~')
+            // if there's a "whitespace" character then continue loop
+            if (character == ' ' || character == '\n' || character == '\t' || character == '\r')
+            {
+                continue;
+            }
+
+            // if no whitespace exit loop
+            break;
+        }
+
+        // return last character read
+        return character;
+    }
+
+
+    // adds Character Change event to event list
+    private void CreateCharacterChangeEvent(StreamReader reader)
+    {
+
+        // create variables for making event
+        string filePath = "Assets/Resources/Characters/";
+        string charNum = "";
+        bool blocking = false;
+
+        char character;
+
+
+        // skip the whitespace
+        character = skipWhiteSpace(reader);
+
+        charNum += character;
+
+
+        // while there's data to read
+        while (reader.Peek() > -1)
+        {
+
+            // read next character
+            character = (char)reader.Read();
+
+
+            // if next line symbol
+            if (character == '|')
+            {
+                // exit loop
+                break;
+            }
+            else
+            {
+
+                // add character to charNum
+                charNum += character;
+            }
+            
+
+        }
+
+
+        // skip the whitespace
+        character = skipWhiteSpace(reader);
+
+        filePath += character;
+
+
+        bool blockCheck = false;
+
+
+        // while there's data to read
+        while (reader.Peek() > -1)
+        {
+
+            // read next character
+            character = (char)reader.Read();
+
+
+            // if end of line character
+            if (character == '|')
+            {
+
+                blockCheck = true;
+                break;
+            }
+
+            // else if end of event character
+            else if(character == '~')
             {
                 break;
             }
             else
             {
+
+                // add character to filePath
+                filePath += character;
+            }
+
+        }
+
+
+        // if checking for block
+        if (blockCheck)
+        {
+
+            // create buffer
+            string buffer = "";
+
+            // skip the whitespace
+            character = skipWhiteSpace(reader);
+
+            buffer += character;
+
+
+            // while there's data to read
+            while (reader.Peek() > -1)
+            {
+
+                // read next character
+                character = (char)reader.Read();
+
+                // if end of event character
+                if (character == '~')
+                {
+
+                    // exit loop
+                    break;
+                }
+                else
+                {
+
+                    // add character to buffer
+                    buffer += character;
+                }
+            }
+
+
+            // check if event is blocking
+            if (buffer.ToUpper() == "TRUE")
+            {
+
+                // if event is blocking then set blocking to true
+                blocking = true;
+            }
+            else
+            {
+
+                // event isn't blocking
+                blocking = false;
+            }
+        }
+
+        // add character change event to event list
+        eventList.Add(new CharacterChangeEvent(filePath, charNum, blocking));
+
+    }
+
+
+    // adds event file to next events list
+    private void AddEventFile(StreamReader reader)
+    {
+
+        // set file directory
+        string file = "Assets/Resources/Events/";
+        char character;
+
+       
+        // skip the whitespace
+        character = skipWhiteSpace(reader);
+
+        file += character;
+
+        // while there's data to read
+        while (reader.Peek() > -1)
+        {
+
+            // read next character
+            character = (char)reader.Read();
+
+
+            // if end of event symbol
+            if (character == '~')
+            {
+
+                // exit loop
+                break;
+            }
+            else
+            {
+
+                // add character to file path
                 file += character;
             }
         }
 
+
+        // add eventfile to list
         nextEventList.Add(file);
     }
 
@@ -456,6 +805,10 @@ public class eventManager : MonoBehaviour
                 case "AUDIO":
                     Debug.Log("audioevent");
                     CreateAudioEvent(reader);
+                    break;
+                case "CHARACTERLOAD":
+                    Debug.Log("characterLoadEvent");
+                    CreateCharacterChangeEvent(reader);
                     break;
                 case "END":   // if end of file
                     Debug.Log("end of file");
