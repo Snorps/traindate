@@ -15,9 +15,28 @@ public struct Dialog
     }
 }
 
+public struct Decision
+{
+    public Effect type;
+    public string data;
+    public string display;
+}
+
+public enum Effect
+{
+    gotoEvent,
+    skipEvent,
+    addDialog
+}
+
 
 public class eventManager : MonoBehaviour
 {
+
+    static char NEWLINE = ';';
+    static char ENDEVENT = '~';
+    static char KEYSTART = '[';
+    static char KEYEND = ']';
 
 
     // Base event class
@@ -52,7 +71,7 @@ public class eventManager : MonoBehaviour
         }
 
         // OnMouse Down is called when left mouse button is pressed
-        public virtual void OnMouseDown()
+        public virtual void OnInput()
         {
               
         }
@@ -111,17 +130,109 @@ public class eventManager : MonoBehaviour
         }
 
         // OnMouse Down is called when left mouse button is pressed
-        public override void OnMouseDown()
+        public override void OnInput()
         {
-
-            // end the event
-            End = true;
+            if (Input.GetMouseButtonDown(0))
+            {
+                // end the event
+                End = true;
+            }
         }
 
         // returns next event
         public override string nextEvent()
         {
             return nextEventList[0];
+        }
+
+    }
+
+    public class DecisionEvent : BaseEvent
+    {
+
+        // attributes
+        private int currentSelect;
+        private List<Decision> selection;
+
+        GameObject UI;
+        GameObject EManager;
+
+        public DecisionEvent(List<Decision> newSelection)
+        {
+            selection = newSelection;
+
+            UI = GameObject.FindGameObjectWithTag("Canvas");
+            EManager = GameObject.FindGameObjectWithTag("EventManager");
+
+            End = false;
+        }
+
+        ~DecisionEvent()
+        {
+
+        }
+
+        public override void begin()
+        {
+            currentSelect = 0;
+            // display the options
+            //UI.GetComponent<UIhandler>().displaySelection(selection);
+            //UI.GetComponent<UIhandler>().displayCursor(currentSelect);
+        }
+
+        public override void OnInput()
+        {
+            
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                currentSelect++;
+                currentSelect %= selection.Count;
+
+                //UI.GetComponent<UIhandler>().displayCursor(currentSelect);
+            }
+
+            if (Input.GetKeyDown(KeyCode.Return))
+            {
+                Choose();
+            }
+        }
+
+        private void Choose()
+        {
+            switch (selection[currentSelect].type)
+            {
+                case Effect.gotoEvent:
+                    gotoEvent();
+                    break;
+                case Effect.skipEvent:
+                    skipEvent();
+                    break;
+                case Effect.addDialog:
+                    addDialog();
+                    break;
+            }
+        }
+
+        private void addDialog()
+        {
+
+        }
+
+        private void skipEvent()
+        {
+            EManager.GetComponent<eventManager>().GotoNextEvent();
+        }
+        
+        private void gotoEvent()
+        {
+            EManager.GetComponent<eventManager>().setNextEvent(selection[currentSelect].data);
+            End = true;
+        }
+
+        public override string nextEvent()
+        {
+            
+            return "";
         }
 
     }
@@ -178,11 +289,14 @@ public class eventManager : MonoBehaviour
         }
 
         // OnMouse Down is called when left mouse button is pressed
-        public override void OnMouseDown()
+        public override void OnInput()
         {
+            if (Input.GetMouseButtonDown(0))
+            {
 
-            // end the event
-            End = true;
+                // end the event
+                End = true;
+            }
         }
 
         // returns next event
@@ -244,25 +358,31 @@ public class eventManager : MonoBehaviour
         }
 
         // when mouse button down
-        public override void OnMouseDown()
+        public override void OnInput()
         {
-            // goto next dialog 
-            currentDialog++;
 
-            // check if at end of dialog
-            if (currentDialog < dialog.Count) {
+            if (Input.GetMouseButtonDown(0))
+            {
+                // goto next dialog 
+                currentDialog++;
 
-                // if there is dialog display it
+                // check if at end of dialog
+                if (currentDialog < dialog.Count)
+                {
 
-                //Debug.Log("mouse down displaying new poop hehe got 'em");
-                UI.GetComponent<UIhandler>().changeText(dialog[currentDialog].message);
-                Debug.Log(dialog[currentDialog].name);
-                // UI display dialog[currentDialog]
-            }
-            else {
+                    // if there is dialog display it
 
-                // else end the event
-                End = true;
+                    //Debug.Log("mouse down displaying new poop hehe got 'em");
+                    UI.GetComponent<UIhandler>().changeText(dialog[currentDialog].message);
+                    Debug.Log(dialog[currentDialog].name);
+                    // UI display dialog[currentDialog]
+                }
+                else
+                {
+
+                    // else end the event
+                    End = true;
+                }
             }
         }
 
@@ -276,12 +396,16 @@ public class eventManager : MonoBehaviour
     }
 
     // index of which is the current event
-    int eventIndex;
-    BaseEvent currentEvent;
-    List<BaseEvent> eventList = new List<BaseEvent> ();
+    private int eventIndex;
+    private BaseEvent currentEvent;
+    private List<BaseEvent> eventList = new List<BaseEvent> ();
 
-    int nextEventIndex;
-    List<string> nextEventList = new List<string>();
+    private string nextEvent;
+
+    void setNextEvent(string newEvent)
+    {
+        nextEvent = newEvent;
+    }
 
     // Use this for initialisation
     void Start ()
@@ -289,8 +413,7 @@ public class eventManager : MonoBehaviour
 
         // set default values
         eventIndex = 0;
-        nextEventIndex = 0;
-        nextEventList.Add("Assets/Resources/Events/dialog1.event");
+        nextEvent = "Assets/Resources/Events/dialog1.event";
         currentEvent = null;
     }
 
@@ -304,12 +427,8 @@ public class eventManager : MonoBehaviour
 
             
             // check for inputs
-            if (Input.GetMouseButtonDown(0))
-            {
 
-                // if mouse button is down then call mouse button down on current event
-                currentEvent.OnMouseDown();
-            }
+            currentEvent.OnInput();
 
             // check if event has ended
             if (currentEvent.End)
@@ -330,7 +449,7 @@ public class eventManager : MonoBehaviour
     private char readLine(StreamReader reader, ref string line, bool skipWhite = false)
     {
 
-        char character = '~';
+        char character = ENDEVENT;
 
         if (skipWhite)
         {
@@ -344,7 +463,7 @@ public class eventManager : MonoBehaviour
 
             character = (char)reader.Read();
 
-            if (character == '|' || character == '~')
+            if (character == NEWLINE || character == ENDEVENT)
             {
                 break;
             }
@@ -380,7 +499,7 @@ public class eventManager : MonoBehaviour
             character = skipWhiteSpace(reader);
 
             // if display setting
-            if (character == '[')
+            if (character == KEYSTART)
             {
 
                 buffer = "";
@@ -390,7 +509,7 @@ public class eventManager : MonoBehaviour
 
                     character = (char)reader.Read();
 
-                    if (character == ']')
+                    if (character == KEYEND)
                     {
                         break;
                     }
@@ -421,13 +540,13 @@ public class eventManager : MonoBehaviour
 
                 character = readLine(reader, ref dialog);
 
-                if (character == '~')
+                if (character == ENDEVENT)
                 {
 
                     DialogList.Add(new Dialog(name, dialog));
                     break;
                 }
-                else if (character == '|')
+                else if (character == NEWLINE)
                 {
                     DialogList.Add(new Dialog(name, dialog));
                     dialog = "";
@@ -498,7 +617,7 @@ public class eventManager : MonoBehaviour
         character = readLine(reader, ref filePath, true);
 
 
-        if (character == '|')
+        if (character == NEWLINE)
         {
             blockCheck = true;
         }
@@ -593,7 +712,7 @@ public class eventManager : MonoBehaviour
     {
 
         // set character to default value
-        char character = '~';
+        char character = ENDEVENT;
 
         // while there's data to read
         while (reader.Peek() > -1)
@@ -661,7 +780,7 @@ public class eventManager : MonoBehaviour
 
         bool blockCheck = false;
 
-        if (character == '|')
+        if (character == NEWLINE)
         {
             blockCheck = true;
         }
@@ -775,7 +894,7 @@ public class eventManager : MonoBehaviour
 
 
             // if end of event symbol
-            if (character == '~')
+            if (character == ENDEVENT)
             {
 
                 // exit loop
@@ -791,7 +910,7 @@ public class eventManager : MonoBehaviour
 
 
         // add eventfile to list
-        nextEventList.Add(file);
+        nextEvent = file;
     }
 
     private void GotoNextEvent()
@@ -833,9 +952,9 @@ public class eventManager : MonoBehaviour
         eventList.Clear();
 
         // get path for next event
-        string path = nextEventList[nextEventIndex];
+        string path = nextEvent;
 
-        nextEventList.Clear();
+        nextEvent = "";
 
         
 
@@ -860,13 +979,13 @@ public class eventManager : MonoBehaviour
             //Debug.Log("\nhere is read character");
             //Debug.Log(character);
 
-            if (character == '[')
+            if (character == KEYSTART)
             {
                 buffer = "";
                 while (reader.Peek() > -1)
                 {
                     character = (char)reader.Read();
-                    if (character == ']')
+                    if (character == KEYEND)
                     {
                         break;
                     }
