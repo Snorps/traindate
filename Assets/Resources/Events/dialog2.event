@@ -15,7 +15,7 @@ commeongdskajfldsjlkf
 		 
 		   [EVENTFILE]   dialog1.event~
 		   
-		   [CHARACTERLOAD]  characterName|  filePath.png|  true~
+		   [CHARACTERLOAD]  Character|  train.png|  true~
 
 		 [DIALOG]mfmdksfmkdsjk|jfkdsjkfjdks|felix is super cool awesome sauce~
 	[EVENTFILE]   dialog2.event~

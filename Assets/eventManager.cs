@@ -370,8 +370,6 @@ public class eventManager : MonoBehaviour
         string dialog = "";
         char character;
 
-        bool end = false;
-
         string buffer = "";
 
         // while file has data and not at end of event data
