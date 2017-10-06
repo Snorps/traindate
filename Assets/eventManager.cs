@@ -4,6 +4,18 @@ using UnityEngine;
 using System.IO;
 
 
+public struct Dialog
+{
+    public string name, message;
+
+    public Dialog(string newName, string newMessage)
+    {
+        name = newName;
+        message = newMessage;
+    }
+}
+
+
 public class eventManager : MonoBehaviour
 {
 
@@ -187,7 +199,7 @@ public class eventManager : MonoBehaviour
     {
 
         // List of dialog used
-        private List<string> dialog;
+        private List<Dialog> dialog;
 
         // index of current dialog
         private int currentDialog;
@@ -199,7 +211,7 @@ public class eventManager : MonoBehaviour
         
 
         // constructor/destructor
-        public DialogEvent(List<string> newDialog)//, string nextEvent, GameObject setUI, GameObject setAudio )
+        public DialogEvent(List<Dialog> newDialog)//, string nextEvent, GameObject setUI, GameObject setAudio )
         {
 
             // set current dialog to start
@@ -225,7 +237,8 @@ public class eventManager : MonoBehaviour
         public override void begin()
         {
             Debug.Log("begin is happening");
-            UI.GetComponent<UIhandler>().changeText(dialog[currentDialog]);
+            UI.GetComponent<UIhandler>().changeText(dialog[currentDialog].message);
+            Debug.Log(dialog[currentDialog].name);
             // UI display first dialog
 
         }
@@ -241,8 +254,9 @@ public class eventManager : MonoBehaviour
 
                 // if there is dialog display it
 
-                Debug.Log("mouse down displaying new poop hehe got 'em");
-                UI.GetComponent<UIhandler>().changeText(dialog[currentDialog]);
+                //Debug.Log("mouse down displaying new poop hehe got 'em");
+                UI.GetComponent<UIhandler>().changeText(dialog[currentDialog].message);
+                Debug.Log(dialog[currentDialog].name);
                 // UI display dialog[currentDialog]
             }
             else {
@@ -313,6 +327,36 @@ public class eventManager : MonoBehaviour
         }
     }
 
+    private char readLine(StreamReader reader, ref string line, bool skipWhite = false)
+    {
+
+        char character = '~';
+
+        if (skipWhite)
+        {
+            line += skipWhiteSpace(reader);
+        }
+
+        
+
+        while (reader.Peek() > -1)
+        {
+
+            character = (char)reader.Read();
+
+            if (character == '|' || character == '~')
+            {
+                break;
+            }
+            else
+            {
+                line += character;
+            }
+        }
+
+        return character;
+    }
+
     // create event types
     //
     // adds Dialog event to event list
@@ -320,61 +364,113 @@ public class eventManager : MonoBehaviour
     {
 
         // create variables for creating dialog event
-        List<string> DialogList = new List<string>();
+        List<Dialog> DialogList = new List<Dialog>();
 
+        string name = "???";
         string dialog = "";
         char character;
 
-        bool end = false;
-
+        string buffer = "";
 
         // while file has data and not at end of event data
-        while (reader.Peek() > -1 && !end)
+        while (reader.Peek() > -1)
         {
 
             // skip the whitespace
             character = skipWhiteSpace(reader);
 
-            dialog += character;
-
-
-            // while not at end of current dialog
-            while (reader.Peek() > -1)
+            // if display setting
+            if (character == '[')
             {
 
-                // read next character
-                character = (char)reader.Read();
+                buffer = "";
 
-                // check for symbols
-                //
-                // if end of event symbol
+                while (reader.Peek() > -1)
+                {
+
+                    character = (char)reader.Read();
+
+                    if (character == ']')
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        buffer += character;
+                    }
+                }
+
+                switch (buffer.ToUpper())
+                {
+                    case "NAME":
+                        name = "";
+
+                        readLine(reader, ref name, true);
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+
+            else
+            {
+
+                // else add character to dialog string
+                dialog += character;
+
+                character = readLine(reader, ref dialog);
+
                 if (character == '~')
                 {
 
-                    //add current dialog to list then exit loop
-                    DialogList.Add(dialog);
-                    end = true;
+                    DialogList.Add(new Dialog(name, dialog));
                     break;
                 }
-
-                // if end of dialog box symbol
                 else if (character == '|')
                 {
-
-                    // add current dialog to list then set current dialog to empty
-                    DialogList.Add(dialog);
+                    DialogList.Add(new Dialog(name, dialog));
                     dialog = "";
-                    break;
                 }
 
-                else
+                /*
+                // while not at end of current dialog
+                while (reader.Peek() > -1)
                 {
 
-                    // else add character to dialog string
-                    dialog += character;
-                }
-            }
+                    // read next character
+                    character = (char)reader.Read();
 
+                    // check for symbols
+                    //
+                    // if end of event symbol
+                    if (character == '~')
+                    {
+
+                        //add current dialog to list then exit loop
+                        DialogList.Add(new Dialog(name, dialog));
+                        end = true;
+                        break;
+                    }
+
+                    // if end of dialog box symbol
+                    else if (character == '|')
+                    {
+
+                        // add current dialog to list then set current dialog to empty
+                        DialogList.Add(new Dialog(name, dialog));
+                        dialog = "";
+                        break;
+                    }
+
+                    else
+                    {
+                        dialog += character;
+                    }
+                }
+                */
+
+            }
         }
         
       
@@ -399,12 +495,15 @@ public class eventManager : MonoBehaviour
         char character;
 
 
-        // skip the whitespace
-        character = skipWhiteSpace(reader);
-
-        filePath += character;
+        character = readLine(reader, ref filePath, true);
 
 
+        if (character == '|')
+        {
+            blockCheck = true;
+        }
+        
+        /*
         // while there's data to read
         while(reader.Peek() > -1)
         {
@@ -431,6 +530,7 @@ public class eventManager : MonoBehaviour
                 break;
             }
         }
+        */
 
 
         // if checking for blocking
@@ -440,13 +540,9 @@ public class eventManager : MonoBehaviour
             // create buffer for getting data
             string buffer = "";
 
+            readLine(reader, ref buffer, true);
 
-            // skip the whitespace
-            character = skipWhiteSpace(reader);
-
-            buffer += character;
-
-
+            /*
             // while there's data to read
             while (reader.Peek() > -1)
             {
@@ -468,6 +564,7 @@ public class eventManager : MonoBehaviour
                     buffer += character;
                 }
             }
+            */
 
             // if blocking is true
             if (buffer.ToUpper() == "TRUE")
@@ -531,13 +628,9 @@ public class eventManager : MonoBehaviour
 
         char character;
 
+        readLine(reader, ref charNum, true);
 
-        // skip the whitespace
-        character = skipWhiteSpace(reader);
-
-        charNum += character;
-
-
+        /*
         // while there's data to read
         while (reader.Peek() > -1)
         {
@@ -562,16 +655,18 @@ public class eventManager : MonoBehaviour
 
         }
 
+        */
 
-        // skip the whitespace
-        character = skipWhiteSpace(reader);
-
-        filePath += character;
-
+        character = readLine(reader, ref filePath, true);
 
         bool blockCheck = false;
 
+        if (character == '|')
+        {
+            blockCheck = true;
+        }
 
+        /*
         // while there's data to read
         while (reader.Peek() > -1)
         {
@@ -601,7 +696,7 @@ public class eventManager : MonoBehaviour
             }
 
         }
-
+        */
 
         // if checking for block
         if (blockCheck)
@@ -610,12 +705,9 @@ public class eventManager : MonoBehaviour
             // create buffer
             string buffer = "";
 
-            // skip the whitespace
-            character = skipWhiteSpace(reader);
+            readLine(reader, ref buffer, true);
 
-            buffer += character;
-
-
+            /*
             // while there's data to read
             while (reader.Peek() > -1)
             {
@@ -637,7 +729,7 @@ public class eventManager : MonoBehaviour
                     buffer += character;
                 }
             }
-
+            */
 
             // check if event is blocking
             if (buffer.ToUpper() == "TRUE")
@@ -791,7 +883,7 @@ public class eventManager : MonoBehaviour
 
 
             // check type of event
-            switch (buffer)
+            switch (buffer.ToUpper())
             {
 
                 case "DIALOG":   // if event type dialog

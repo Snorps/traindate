@@ -1,15 +1,21 @@
-[DIALOG]Nik is a gay lord he likes to eat shit hehehehehehehehehe|jkfldsjkfljdskljfkldsjfkljdskljfkldsjklfjdskljfklds|fjkldjslf~
+[DIALOG]
+[NAME]Jocklecock1|
+	Nik is a gay lord he likes to eat shit hehehehehehehehehe|
+
+	jkfldsjkfljdskljfkldsjfkljdskljfkldsjklfjdskljfklds|fjkldjslf~
 
 
 commeongdskajfldsjlkf
 [DIALOG]fjdsklfjlkdsjfkldjs|jfkdlsjfkldsjklfjldskj|fjdksljfkldsj~
 
          
-		 [DIALOG]Crag is a swell dude~
+		 [DIALOG]
+		 [NAME]  craglestein|
+		 Crag is a swell dude~
 		 
 		   [EVENTFILE]   dialog1.event~
 		   
-		   [CHARACTERLOAD]  characterName|  filePath.png|  TRUE~
+		   [CHARACTERLOAD]  Character|  train.png|  true~
 
 		 [DIALOG]mfmdksfmkdsjk|jfkdsjkfjdks|felix is super cool awesome sauce~
 	[EVENTFILE]   dialog2.event~
