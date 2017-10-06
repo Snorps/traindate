@@ -33,6 +33,11 @@ public enum Effect
 public class eventManager : MonoBehaviour
 {
 
+    static char NEWLINE = ';';
+    static char ENDEVENT = '~';
+    static char KEYSTART = '[';
+    static char KEYEND = ']';
+
 
     // Base event class
     public class BaseEvent
@@ -444,7 +449,7 @@ public class eventManager : MonoBehaviour
     private char readLine(StreamReader reader, ref string line, bool skipWhite = false)
     {
 
-        char character = '~';
+        char character = ENDEVENT;
 
         if (skipWhite)
         {
@@ -458,7 +463,7 @@ public class eventManager : MonoBehaviour
 
             character = (char)reader.Read();
 
-            if (character == '|' || character == '~')
+            if (character == NEWLINE || character == ENDEVENT)
             {
                 break;
             }
@@ -494,7 +499,7 @@ public class eventManager : MonoBehaviour
             character = skipWhiteSpace(reader);
 
             // if display setting
-            if (character == '[')
+            if (character == KEYSTART)
             {
 
                 buffer = "";
@@ -504,7 +509,7 @@ public class eventManager : MonoBehaviour
 
                     character = (char)reader.Read();
 
-                    if (character == ']')
+                    if (character == KEYEND)
                     {
                         break;
                     }
@@ -535,13 +540,13 @@ public class eventManager : MonoBehaviour
 
                 character = readLine(reader, ref dialog);
 
-                if (character == '~')
+                if (character == ENDEVENT)
                 {
 
                     DialogList.Add(new Dialog(name, dialog));
                     break;
                 }
-                else if (character == '|')
+                else if (character == NEWLINE)
                 {
                     DialogList.Add(new Dialog(name, dialog));
                     dialog = "";
@@ -612,7 +617,7 @@ public class eventManager : MonoBehaviour
         character = readLine(reader, ref filePath, true);
 
 
-        if (character == '|')
+        if (character == NEWLINE)
         {
             blockCheck = true;
         }
@@ -707,7 +712,7 @@ public class eventManager : MonoBehaviour
     {
 
         // set character to default value
-        char character = '~';
+        char character = ENDEVENT;
 
         // while there's data to read
         while (reader.Peek() > -1)
@@ -775,7 +780,7 @@ public class eventManager : MonoBehaviour
 
         bool blockCheck = false;
 
-        if (character == '|')
+        if (character == NEWLINE)
         {
             blockCheck = true;
         }
@@ -889,7 +894,7 @@ public class eventManager : MonoBehaviour
 
 
             // if end of event symbol
-            if (character == '~')
+            if (character == ENDEVENT)
             {
 
                 // exit loop
@@ -974,13 +979,13 @@ public class eventManager : MonoBehaviour
             //Debug.Log("\nhere is read character");
             //Debug.Log(character);
 
-            if (character == '[')
+            if (character == KEYSTART)
             {
                 buffer = "";
                 while (reader.Peek() > -1)
                 {
                     character = (char)reader.Read();
-                    if (character == ']')
+                    if (character == KEYEND)
                     {
                         break;
                     }
