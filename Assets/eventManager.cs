@@ -4,17 +4,6 @@ using UnityEngine;
 using System.IO;
 
 
-public struct Dialog
-{
-    public string name, message;
-
-    public Dialog(string newName, string newMessage)
-    {
-        name = newName;
-        message = newMessage;
-    }
-}
-
 public struct Decision
 {
     public Effect type;
@@ -351,7 +340,7 @@ public class eventManager : MonoBehaviour
         public override void begin()
         {
             Debug.Log("begin is happening");
-            UI.GetComponent<UIhandler>().changeText(dialog[currentDialog].message);
+            UI.GetComponent<UIhandler>().changeText(dialog[currentDialog]);
             Debug.Log(dialog[currentDialog].name);
             // UI display first dialog
 
@@ -373,7 +362,7 @@ public class eventManager : MonoBehaviour
                     // if there is dialog display it
 
                     //Debug.Log("mouse down displaying new poop hehe got 'em");
-                    UI.GetComponent<UIhandler>().changeText(dialog[currentDialog].message);
+                    UI.GetComponent<UIhandler>().changeText(dialog[currentDialog]);
                     Debug.Log(dialog[currentDialog].name);
                     // UI display dialog[currentDialog]
                 }
@@ -453,23 +442,27 @@ public class eventManager : MonoBehaviour
 
         if (skipWhite)
         {
-            line += skipWhiteSpace(reader);
+            character = skipWhiteSpace(reader);
         }
 
-        
-
-        while (reader.Peek() > -1)
+        if (character != NEWLINE && character != ENDEVENT)
         {
 
-            character = (char)reader.Read();
+            line += character;
 
-            if (character == NEWLINE || character == ENDEVENT)
+            while (reader.Peek() > -1)
             {
-                break;
-            }
-            else
-            {
-                line += character;
+
+                if (character == NEWLINE || character == ENDEVENT)
+                {
+                    break;
+                }
+                else
+                {
+                    line += character;
+                }
+
+                character = (char)reader.Read();
             }
         }
 
@@ -485,7 +478,7 @@ public class eventManager : MonoBehaviour
         // create variables for creating dialog event
         List<Dialog> DialogList = new List<Dialog>();
 
-        string name = "???";
+        string name = "";
         string dialog = "";
         char character;
 
@@ -530,6 +523,19 @@ public class eventManager : MonoBehaviour
                         break;
                 }
 
+            }
+
+            else if (character == NEWLINE)
+            {
+
+                DialogList.Add(new Dialog(name, dialog));
+                dialog = "";
+            }
+
+            else if (character == ENDEVENT)
+            {
+                DialogList.Add(new Dialog(name, dialog));
+                break;
             }
 
             else
