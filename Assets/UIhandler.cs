@@ -7,7 +7,6 @@ public class UIhandler : MonoBehaviour {
 
     Text dialogText;
     public bool dialogStaggering;
-    public GameObject test;
 
     // Use this for initialization
     void Start () {
@@ -59,7 +58,7 @@ public class UIhandler : MonoBehaviour {
     public void changeImageSprite(string imageName, string filePath)
     {
         this.gameObject.transform.Find(imageName).gameObject.GetComponent<Image>().sprite = Resources.Load(filePath, typeof(Sprite)) as Sprite;
-    }
+    }  
 
     // Update is called once per frame
     void Update () {
