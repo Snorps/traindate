@@ -13,7 +13,7 @@ public class UIhandler : MonoBehaviour {
 		dialogText = this.gameObject.transform.Find("DialogText").gameObject.GetComponent<Text>();
         //changeImageSprite("Character", "traumatrain");
         dialogStaggering = false;
-
+        changeImageSprite("Character", "traumatrain");
     }
 
     public void changeText(string str, float textDelay = 0.07f) //to be called by the event manager
@@ -57,8 +57,8 @@ public class UIhandler : MonoBehaviour {
 
     public void changeImageSprite(string imageName, string filePath)
     {
-        this.gameObject.transform.Find(imageName).gameObject.GetComponent<Image>().sprite = (Sprite)Resources.Load(filePath);
-    }
+        this.gameObject.transform.Find(imageName).gameObject.GetComponent<Image>().sprite = Resources.Load(filePath, typeof(Sprite)) as Sprite;
+    }  
 
     // Update is called once per frame
     void Update () {
