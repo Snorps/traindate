@@ -3,21 +3,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public struct Dialog
+{
+    public string name, message;
+    public float textDelay;
+    
+
+    public Dialog(string newName, string newMessage, float delay = 0.07f)
+    {
+        name = newName;
+        message = newMessage;
+        textDelay = delay;
+    }
+}
+
 public class UIhandler : MonoBehaviour {
 
     Text dialogText;
+    Text nameText;
+    Sprite nameBoxSprite;
     public bool dialogStaggering;
 
     // Use this for initialization
     void Start () {
 		dialogText = this.gameObject.transform.Find("DialogText").gameObject.GetComponent<Text>();
+        nameText = this.gameObject.transform.Find("NameText").gameObject.GetComponent<Text>();
+        nameBoxSprite = this.gameObject.transform.Find("NameBox").gameObject.GetComponent<Image>().sprite;
         //changeImageSprite("Character", "traumatrain");
         dialogStaggering = false;
-
+        changeImageSprite("Character", "traumatrain");
     }
 
-    public void changeText(string str, float textDelay = 0.07f) //to be called by the event manager
+    public void changeText(Dialog dialog, float textDelay = 0.07f) //to be called by the event manager
     {
+        if (name == "")
+        {
+            nameText.text = "";
+            nameBoxSprite = new Sprite();
+        } else
+        {
+            nameText.text = dialog.name;
+            nameBoxSprite = Resources.Load("9tile", typeof(Sprite)) as Sprite;
+        }
+        string str = dialog.message;
         if (dialogStaggering)
         {
             dialogStaggering = false;
@@ -57,7 +85,12 @@ public class UIhandler : MonoBehaviour {
 
     public void changeImageSprite(string imageName, string filePath)
     {
-        this.gameObject.transform.Find(imageName).gameObject.GetComponent<Image>().sprite = (Sprite)Resources.Load(filePath);
+        this.gameObject.transform.Find(imageName).gameObject.GetComponent<Image>().sprite = Resources.Load(filePath, typeof(Sprite)) as Sprite;
+    }
+
+    public void createImage(string name, string spriteFilePath, Vector3 position)
+    {
+
     }
 
     // Update is called once per frame
