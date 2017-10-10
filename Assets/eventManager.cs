@@ -7,15 +7,6 @@ using System.IO;
 
 public class eventManager : MonoBehaviour
 {
-
-    static char NEWLINE = ';';
-    static char ENDEVENT = '~';
-    static char KEYSTART = '[';
-    static char KEYEND = ']';
-    static char DECISIONSTART = '{';
-    static char DECISIONEND = '}';
-
-
     UIhandler UI;
 
     // index of which is the current event
@@ -23,6 +14,8 @@ public class eventManager : MonoBehaviour
     private BaseEvent currentEvent;
     private List<BaseEvent> eventList = new List<BaseEvent> ();
     private eventLoader loader = new eventLoader();
+
+    private bool skipCurrent = false;
 
     private string nextEvent;
 
@@ -68,8 +61,13 @@ public class eventManager : MonoBehaviour
             }
             //Debug.Log("checking for input");
 
+            if (skipCurrent)
+            {
+                LoadEvent();
+            }
+
             // check if event has ended
-            if (currentEvent.End)
+            else if (currentEvent.End)
             {
 
                 // change current event to the next one
@@ -84,8 +82,12 @@ public class eventManager : MonoBehaviour
         }
     }
 
-    
-    private void GotoNextEvent()
+    public void SkipEvents()
+    {
+        skipCurrent = true;
+    }
+
+    public void GotoNextEvent()
     {
 
         // increase index to next event
@@ -140,7 +142,7 @@ public class eventManager : MonoBehaviour
 
         nextEvent = "";
 
-
+        skipCurrent = false;
 
         currentEvent = eventList[eventIndex];
         currentEvent.begin();

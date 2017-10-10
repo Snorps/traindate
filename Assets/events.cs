@@ -426,3 +426,46 @@ public class DialogEvent : BaseEvent
 
 }
 
+
+public class GotoNextEvent : BaseEvent
+{
+
+    eventManager manager;
+
+    // constructor/destructor
+    public GotoNextEvent()
+    {
+
+        End = true;
+
+    }
+
+    ~GotoNextEvent()
+    {
+
+    }
+
+
+    // virtual methods for inheritance
+    //
+    // begin is called when event starts
+    public override void begin()
+    {
+        manager = GameObject.FindGameObjectWithTag("EventManager").GetComponent<eventManager>();
+
+        manager.SkipEvents();
+
+        
+    }
+
+    // OnMouse Down is called when left mouse button is pressed
+    public override void OnInput()
+    {
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            End = true;
+        }
+    }
+
+}

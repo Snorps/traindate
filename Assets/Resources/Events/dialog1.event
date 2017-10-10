@@ -1,31 +1,41 @@
-[Dialog] [name] jocklestein3;    eat shit chicken dipper;  Death to the whites;
+[Dialog] [name] poop;    eat shit chicken dipper;  Death to the whites;
 
   [NAME]  Nik the shit;
   we didn't start the fire it was always burning sinc eht eworld's been turning~
 
 look I'm doing some commenting heh got 'em
 
-[DIALOG]fjkdsljflsjklfjdskl~
 
 more commenting
 
 [EVENTFILE]  dialog2.event~
 
 
-		[END] [DIALOG]Nik is gay~
-		
-		{maybe instead of effects it should just add events to front of events list in manager}
-		
-		Decision syntax
-		
-		[Decision]  
+[Decision]  
 						//can have multiple effects just type all effects into the option//
 		//option 1// { 
-							[MESSAGE] message; 
-							[EFFECT] effectType, [DATA] data; 
-							[EFFECT] effectType, [DATA] data;
+							[MESSAGE] this is a message~ 
+							[Dialog] [name] effectType; poopsicles~ 
+							[Dialog] hrglfrgl~
 					}
-		//option 2// { [EFFECT] effectType, [DATA] data, [MESSAGE] message; [EFFECT] effectType, [DATA] data, [MESSAGE] message;}
-		[DECISIONEND]
+		//option 2// { 
+							[MESSAGE] this is a message~ 
+							[Dialog] [name] effectType; i'm a poopy butt hole~ 
+							[Dialog] lemons~
+					}~
+
+		[END]
+		
+		list of usable events right now:
+		
+		[dialog] - [name], strings
+		[Decision] - [message], can create more events for that decision within brackets {}
+		[eventfile] - path string, set next file to load (if no file is set game will pronanly crash)
+		[audio] (not working yet due to nothing handling audio) - string path, blocking
+		[characterload] - string path, blocking
+		[end] - marks end of file
+		[skip] - skip the rest of the event and loads the next file
+		
+		
 		
 		
