@@ -8,7 +8,6 @@ public struct Dialog
     public string name, message;
     public float textDelay;
     
-
     public Dialog(string newName, string newMessage, float delay = 0.07f)
     {
         name = newName;
@@ -19,6 +18,7 @@ public struct Dialog
 
 public class UIhandler : MonoBehaviour {
 
+   // public GameObject testNtext;
     Text dialogText;
     Text nameText;
     Sprite nameBoxSprite;
@@ -27,20 +27,17 @@ public class UIhandler : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-		dialogText = this.gameObject.transform.Find("DialogText").gameObject.GetComponent<Text>();
+        dialogText = this.gameObject.transform.Find("DialogText").gameObject.GetComponent<Text>();
         nameText = this.gameObject.transform.Find("NameText").gameObject.GetComponent<Text>();
-        nameBoxSprite = this.gameObject.transform.Find("NameBox").gameObject.GetComponent<Image>().sprite;
-        //changeImageSprite("Character", "traumatrain");
         dialogStaggering = false;
-        changeImageSprite("Character", "traumatrain");
     }
 
-    public void changeText(Dialog dialog, float textDelay = 0.07f) //to be called by the event manager
+    public void changeText(Dialog dialog) //to be called by the event manager
     {
-        if (name == "")
+        if (dialog.name == "")
         {
             nameText.text = "";
-            nameBoxSprite = new Sprite();
+            changeImageSprite("NameBox", "blank64");
         } else
         {
             nameText.text = dialog.name;
@@ -55,7 +52,7 @@ public class UIhandler : MonoBehaviour {
         {
             clearText();
             dialogStaggering = true;
-            StartCoroutine(StaggerText(str, textDelay));
+            StartCoroutine(StaggerText(str, dialog.textDelay));
         }
         
     }
