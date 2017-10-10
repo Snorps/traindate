@@ -7,15 +7,6 @@ using System.IO;
 
 public class eventManager : MonoBehaviour
 {
-
-    static char NEWLINE = ';';
-    static char ENDEVENT = '~';
-    static char KEYSTART = '[';
-    static char KEYEND = ']';
-    static char DECISIONSTART = '{';
-    static char DECISIONEND = '}';
-
-
     UIhandler UI;
 
     // index of which is the current event
