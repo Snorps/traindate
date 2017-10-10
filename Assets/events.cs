@@ -255,23 +255,6 @@ public class DecisionEvent : BaseEvent
         */
     //} 
 
-
-    private void addDialog()
-    {
-
-    }
-
-    private void skipEvent()
-    {
-        //EManager.GetComponent<eventManager>().GotoNextEvent();
-    }
-
-    private void gotoEvent()
-    {
-        //EManager.GetComponent<eventManager>().setNextEvent(selection[currentSelect].data);
-        End = true;
-    }
-
     public override string nextEvent()
     {
 
