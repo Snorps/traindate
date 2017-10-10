@@ -32,6 +32,11 @@ public class UIhandler : MonoBehaviour {
         dialogStaggering = false;
     }
 
+    public void onInput()
+    {
+            dialogStaggering = false;
+    }
+
     public void changeText(Dialog dialog) //to be called by the event manager
     {
         if (dialog.name == "")
@@ -44,17 +49,9 @@ public class UIhandler : MonoBehaviour {
             nameBoxSprite = Resources.Load("9tile", typeof(Sprite)) as Sprite;
         }
         string str = dialog.message;
-        if (dialogStaggering)
-        {
-            dialogStaggering = false;
-        }
-        else
-        {
-            clearText();
-            dialogStaggering = true;
-            StartCoroutine(StaggerText(str, dialog.textDelay));
-        }
-        
+        clearText();
+        dialogStaggering = true;
+        StartCoroutine(StaggerText(str, dialog.textDelay));
     }
 
 
