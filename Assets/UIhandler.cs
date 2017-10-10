@@ -23,6 +23,7 @@ public class UIhandler : MonoBehaviour {
     Text nameText;
     Sprite nameBoxSprite;
     public bool dialogStaggering;
+    public Image instantiableImage;
 
     // Use this for initialization
     void Start () {
@@ -85,9 +86,12 @@ public class UIhandler : MonoBehaviour {
         this.gameObject.transform.Find(imageName).gameObject.GetComponent<Image>().sprite = Resources.Load(filePath, typeof(Sprite)) as Sprite;
     }
 
-    public void createImage(string name, string spriteFilePath, Vector3 position)
+    public void createImage(string name, string spriteFilePath, Vector2 position) //create a new image, low level, use higher level functions for characters in stead
     {
-
+        Sprite sprite = Resources.Load(spriteFilePath, typeof(Sprite)) as Sprite;
+        Image image = Instantiate(instantiableImage);
+        image.gameObject.GetComponent<Image>().sprite = sprite;
+        image.gameObject.GetComponent<RectTransform>().anchoredPosition = position;
     }
 
     // Update is called once per frame
