@@ -94,6 +94,10 @@ public class eventLoader {
                     Debug.Log("end of file");
                     endOfFile = true;
                     break;
+                case "SKIP":
+                    Debug.Log("skipping file");
+                    eventList.Add(new GotoNextEvent());
+                    break;
                 default:
                     break;
             }
@@ -238,42 +242,7 @@ public class eventLoader {
                     dialog = "";
                 }
 
-                /*
-                // while not at end of current dialog
-                while (reader.Peek() > -1)
-                {
-
-                    // read next character
-                    character = (char)reader.Read();
-
-                    // check for symbols
-                    //
-                    // if end of event symbol
-                    if (character == '~')
-                    {
-
-                        //add current dialog to list then exit loop
-                        DialogList.Add(new Dialog(name, dialog));
-                        end = true;
-                        break;
-                    }
-
-                    // if end of dialog box symbol
-                    else if (character == '|')
-                    {
-
-                        // add current dialog to list then set current dialog to empty
-                        DialogList.Add(new Dialog(name, dialog));
-                        dialog = "";
-                        break;
-                    }
-
-                    else
-                    {
-                        dialog += character;
-                    }
-                }
-                */
+                
 
             }
         }
@@ -359,19 +328,23 @@ public class eventLoader {
                                 break;
                             case "EVENTFILE":
                                 Debug.Log("eventfile");
-                                AddEventFile(reader);
+                                eventList.Add( AddEventFile(reader));
                                 break;
                             case "AUDIO":
                                 Debug.Log("audioevent");
-                                CreateAudioEvent(reader);
+                                eventList.Add( CreateAudioEvent(reader));
                                 break;
                             case "CHARACTERLOAD":
                                 Debug.Log("characterLoadEvent");
-                                CreateCharacterChangeEvent(reader);
+                                eventList.Add( CreateCharacterChangeEvent(reader));
                                 break;
                             case "END":   // if end of file
                                 //Debug.Log("end of file");
                                 //endOfFile = true;
+                                break;
+                            case "SKIP":
+                                Debug.Log("skipping file");
+                                eventList.Add( new GotoNextEvent());
                                 break;
                             default:
                                 break;
