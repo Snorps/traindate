@@ -16,7 +16,7 @@ public class eventManager : MonoBehaviour
     static char DECISIONEND = '}';
 
 
-    
+    UIhandler UI;
 
     // index of which is the current event
     private int eventIndex;
@@ -38,6 +38,8 @@ public class eventManager : MonoBehaviour
         eventIndex = 0;
         nextEvent = "Assets/Resources/Events/dialog1.event";
         currentEvent = null;
+
+        UI = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIhandler>();
     }
 
     // Update is called once per frame
@@ -48,10 +50,20 @@ public class eventManager : MonoBehaviour
         if (currentEvent != null)
         {
 
-            
+
             // check for inputs
 
-            currentEvent.OnInput();
+            if (UI.dialogStaggering)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    // call ui staggering
+                }
+            }
+            else
+            {
+                currentEvent.OnInput();
+            }
             //Debug.Log("checking for input");
 
             // check if event has ended
