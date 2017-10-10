@@ -7,7 +7,7 @@ public struct Dialog
 {
     public string name, message;
     public float textDelay;
-    
+
     public Dialog(string newName, string newMessage, float delay = 0.07f)
     {
         name = newName;
@@ -16,9 +16,10 @@ public struct Dialog
     }
 }
 
-public class UIhandler : MonoBehaviour {
+public class UIhandler : MonoBehaviour
+{
 
-   // public GameObject testNtext;
+    // public GameObject testNtext;
     Text dialogText;
     Text nameText;
     Sprite nameBoxSprite;
@@ -26,15 +27,18 @@ public class UIhandler : MonoBehaviour {
     public Image instantiableImage;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         dialogText = this.gameObject.transform.Find("DialogText").gameObject.GetComponent<Text>();
         nameText = this.gameObject.transform.Find("NameText").gameObject.GetComponent<Text>();
         dialogStaggering = false;
+
     }
 
+    //////////////////////////////Dialog Stuff////////////////////////////////////
     public void onInput()
     {
-            dialogStaggering = false;
+        dialogStaggering = false;
     }
 
     public void changeText(Dialog dialog) //to be called by the event manager
@@ -43,7 +47,8 @@ public class UIhandler : MonoBehaviour {
         {
             nameText.text = "";
             changeImageSprite("NameBox", "blank64");
-        } else
+        }
+        else
         {
             nameText.text = dialog.name;
             nameBoxSprite = Resources.Load("9tile", typeof(Sprite)) as Sprite;
@@ -60,13 +65,14 @@ public class UIhandler : MonoBehaviour {
         for (int i = 0; i < str.Length; i++) //for every letter in the string to be displayed
         {
             Debug.Log(dialogStaggering);
-            if (dialogStaggering && (i+1) < str.Length)
+            if (dialogStaggering && (i + 1) < str.Length)
             {
                 dialogText.text = dialogText.text.Insert(dialogText.text.Length, str.Substring(i, 1)); //append curent char text in dialog box
                 yield return new WaitForSeconds(textDelay);
-            } else
+            }
+            else
             {
-                dialogText.text = dialogText.text.Insert(dialogText.text.Length, str.Substring(i, str.Length-i)); //append rest of text in dialog box
+                dialogText.text = dialogText.text.Insert(dialogText.text.Length, str.Substring(i, str.Length - i)); //append rest of text in dialog box
                 dialogStaggering = false;
                 break; //cancel for if told to skip staggering
             }
@@ -77,6 +83,8 @@ public class UIhandler : MonoBehaviour {
     {
         dialogText.text = "";
     }
+
+    /// //////////////////////////////////////Sprite Stuff//////////////////////////
 
     public void changeImageSprite(string imageName, string filePath)
     {
@@ -91,8 +99,28 @@ public class UIhandler : MonoBehaviour {
         image.gameObject.GetComponent<RectTransform>().anchoredPosition = position;
     }
 
-    // Update is called once per frame
-    void Update () {
-		
-	}
+    public void fadeImage(string imageName, float targetAlpha = 0f, float time = 0.25f)
+    {
+        Image image = this.gameObject.transform.Find(imageName).gameObject.GetComponent<Image>();
+        Color color = image.color;
+
+        StartCoroutine(StaggerImageAlpha(image, targetAlpha, time));
+    }
+
+    IEnumerator StaggerImageAlpha(Image image, float targetAlpha, float time)
+    {
+        Color color = image.color;
+        float currentAlpha = color.a;
+
+        float delay = 0.02f; //time between each iteration
+        int stepCount = (int)(time / delay); //number of times to iterate
+        float alphaStep = (-(currentAlpha - targetAlpha)) / stepCount; //amount to increase/decrease alpha by each iteration
+
+        for (int i = 0; i < stepCount; i++)
+        {
+            color.a = color.a + alphaStep;
+            image.color = color;
+            yield return new WaitForSeconds(delay);
+        }
+    }
 }
