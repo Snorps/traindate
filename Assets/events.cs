@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public struct Decision
 {
@@ -85,11 +86,13 @@ public class SetNextFileEvent : BaseEvent
     // begin is called when event starts
     public override void begin()
     {
-
+        /*
         GameObject manager = GameObject.FindGameObjectWithTag("EventManager");//.GetComponent<eventManager>();
 
         manager.GetComponent<eventManager>().SetNextEvent(file);
+        */
 
+        eventManager.manager.SetNextEvent(file);
         End = true;
     }
 
@@ -184,7 +187,7 @@ public class DecisionEvent : BaseEvent
         selection = newSelection;
 
         UI = GameObject.FindGameObjectWithTag("Canvas");
-        EManager = GameObject.FindGameObjectWithTag("EventManager");
+        //EManager = GameObject.FindGameObjectWithTag("EventManager");
 
         End = false;
     }
@@ -223,8 +226,10 @@ public class DecisionEvent : BaseEvent
 
         if (Input.GetMouseButtonDown(1))//Input.GetKeyDown(KeyCode.Return))
         {
-            EManager.GetComponent<eventManager>().InsertEvents( selection[currentSelect].events );
+            //EManager.GetComponent<eventManager>().InsertEvents( selection[currentSelect].events );
             //Choose();
+
+            eventManager.manager.InsertEvents(selection[currentSelect].events);
             End = true;
         }
     }
@@ -430,7 +435,7 @@ public class DialogEvent : BaseEvent
 public class GotoNextEvent : BaseEvent
 {
 
-    eventManager manager;
+    //eventManager manager;
 
     // constructor/destructor
     public GotoNextEvent()
@@ -451,9 +456,9 @@ public class GotoNextEvent : BaseEvent
     // begin is called when event starts
     public override void begin()
     {
-        manager = GameObject.FindGameObjectWithTag("EventManager").GetComponent<eventManager>();
+        //manager = GameObject.FindGameObjectWithTag("EventManager").GetComponent<eventManager>();
 
-        manager.SkipEvents();
+        eventManager.manager.SkipEvents();
 
         
     }
@@ -466,6 +471,45 @@ public class GotoNextEvent : BaseEvent
         {
             End = true;
         }
+    }
+
+}
+
+
+public class GameEvent : BaseEvent
+{
+
+    string gameScene;
+
+
+    public GameEvent(string SceneName)
+    {
+        gameScene = SceneName;
+
+        End = false;
+    }
+
+    public override void begin()
+    {
+
+        SceneManager.LoadScene(gameScene);
+
+    }
+
+
+    public override void OnInput()
+    {
+        
+    }
+
+    public void ReturnToData()
+    {
+
+        SceneManager.LoadScene("Main");
+
+        End = true;
+
+
     }
 
 }
