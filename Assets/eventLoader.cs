@@ -98,6 +98,10 @@ public class eventLoader {
                     Debug.Log("skipping file");
                     eventList.Add(new GotoNextEvent());
                     break;
+                case "GAME":
+                    Debug.Log("minigame event");
+                    eventList.Add( CreateGameEvent(reader) );
+                    break;
                 default:
                     break;
             }
@@ -255,6 +259,17 @@ public class eventLoader {
 
     }
 
+    // adds Game Event to event list
+    private GameEvent CreateGameEvent(StreamReader reader)
+    {
+
+        string scene = "";
+
+        readLine(reader, ref scene, true);
+
+        return new GameEvent(scene);
+
+    }
 
     // adds decision event to event list
     private DecisionEvent CreateDecisionEvent(StreamReader reader)
@@ -345,6 +360,10 @@ public class eventLoader {
                             case "SKIP":
                                 Debug.Log("skipping file");
                                 eventList.Add( new GotoNextEvent());
+                                break;
+                            case "GAME":
+                                Debug.Log("game event");
+                                eventList.Add(CreateGameEvent(reader));
                                 break;
                             default:
                                 break;
@@ -657,36 +676,9 @@ public class eventLoader {
 
         // set file directory
         string file = "Assets/Resources/Events/";
-        char character;
 
 
-        // skip the whitespace
-        character = skipWhiteSpace(reader);
-
-        file += character;
-
-        // while there's data to read
-        while (reader.Peek() > -1)
-        {
-
-            // read next character
-            character = (char)reader.Read();
-
-
-            // if end of event symbol
-            if (character == ENDEVENT)
-            {
-
-                // exit loop
-                break;
-            }
-            else
-            {
-
-                // add character to file path
-                file += character;
-            }
-        }
+        readLine(reader, ref file, true);
 
 
         // add eventfile to list
