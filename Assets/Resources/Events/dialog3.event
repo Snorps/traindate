@@ -1,0 +1,23 @@
+[DIALOG]
+		
+		[NAME]  Sandy;
+		
+		hey I'm sandy what a swell guy i am;
+		i'm still talking hrglfrgl;
+		
+		[NAME]  Jock;
+		
+		Sandy more like eat poop;
+		heh got 'em;
+		
+		[NAME]  ;
+		
+		Jock walks away like a boss~
+		
+[EVENTFILE]
+
+		dialog1.event~
+		
+[end]
+		
+		

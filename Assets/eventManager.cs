@@ -9,6 +9,8 @@ public class eventManager : MonoBehaviour
 {
     UIhandler UI;
 
+    public static eventManager manager;
+
     // index of which is the current event
     private int eventIndex;
     private BaseEvent currentEvent;
@@ -19,9 +21,17 @@ public class eventManager : MonoBehaviour
 
     private string nextEvent;
 
-    void setNextEvent(string newEvent)
+    void Awake()
     {
-        nextEvent = newEvent;
+        if (manager == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            manager = this;
+        }
+        else if (manager != this)
+        {
+            Destroy(gameObject);
+        }
     }
 
     // Use this for initialisation
@@ -44,6 +54,7 @@ public class eventManager : MonoBehaviour
         if (currentEvent != null)
         {
 
+            
 
             // check for inputs
 
@@ -126,6 +137,11 @@ public class eventManager : MonoBehaviour
     {
 
         nextEvent = path;
+    }
+
+    public BaseEvent GetCurrentEvent()
+    {
+        return currentEvent;
     }
 
     // load new events

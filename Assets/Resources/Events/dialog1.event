@@ -8,11 +8,13 @@ look I'm doing some commenting heh got 'em
 
 more commenting
 
-[EVENTFILE]  dialog2.event~
+[EVENTFILE]  dialog3.event~
+
+[game]  Train Cart Game/Hand Cart Game~
 
 
 [Decision]  
-						//can have multiple effects just type all effects into the option//
+						//can have multiple events just type all events into the option//
 		//option 1// { 
 							[MESSAGE] this is a message~ 
 							[Dialog] [name] effectType; poopsicles~ 
@@ -30,12 +32,53 @@ more commenting
 		
 		[dialog] - [name], strings
 		[Decision] - [message], can create more events for that decision within brackets {}
-		[eventfile] - path string, set next file to load (if no file is set game will pronanly crash)
+		[eventfile] - path string, set next file to load (if no file is set game will probably crash)
 		[audio] (not working yet due to nothing handling audio) - string path, blocking
 		[characterload] - string path, blocking
 		[end] - marks end of file
 		[skip] - skip the rest of the event and loads the next file
+		[game] - load and play minigame (right now when you move to a game and return back to main all the stuff being displayed won't be on display anymore)
 		
 		
+		[skip] and [end] are just labels and don't need any extra syntax
+		
+		
+		[dialog] is structured like this: [dialog] some message; another message; [name] geoff; another message; last message~
+																^can put name anywhere in message and will give messages that name until it is changed again
+		poop
+		[EventFile]  pathOfNextFile~
+		
+		[audio]  pathOfAudioFile~
+		[audio]  path; true~  (add true or false on end to say whether or not event is blocking)
+		
+		[characterload]  pathOfImage~
+		[characterload]   path; true~ (same as above)
+		
+		[decision] (example above)
+		
+		[game]  nameOfGameScene~
+		
+		
+		there can be as much whitespace inbetween data as you'd like
+		
+		example [dialog] with spacing:
+		
+		[DIALOG]
+		
+		[NAME]  Sandy;
+		
+		hey I'm sandy what a swell guy i am;
+		i'm still talking hrglfrgl;
+		
+		[NAME]  Jock;
+		
+		Sandy more like eat poop;
+		heh got 'em;
+		
+		[NAME]  ;
+		
+		Jock walks away like a boss~
+		
+		([Name] with no text will give dialog with no name attached. probably best used for non talking things)
 		
 		
