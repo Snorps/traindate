@@ -19,6 +19,21 @@ public struct Dialog
 public class UIhandler : MonoBehaviour
 {
 
+    public static UIhandler UI;
+
+    void Awake()
+    {
+        if (UI == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            UI = this;
+        }
+        else if (UI != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+
     // public GameObject testNtext;
     Text dialogText;
     Text nameText;
@@ -32,21 +47,20 @@ public class UIhandler : MonoBehaviour
         dialogText = this.gameObject.transform.Find("DialogText").gameObject.GetComponent<Text>();
         nameText = this.gameObject.transform.Find("NameText").gameObject.GetComponent<Text>();
         dialogStaggering = false;
-
     }
 
     //////////////////////////////Dialog Stuff////////////////////////////////////
-    public void onInput()
+    public void OnInput()
     {
         dialogStaggering = false;
     }
 
-    public void changeText(Dialog dialog) //to be called by the event manager
+    public void ChangeText(Dialog dialog) //to be called by the event manager
     {
         if (dialog.name == "")
         {
             nameText.text = "";
-            changeImageSprite("NameBox", "blank64");
+            ChangeImageSprite("NameBox", "blank64");
         }
         else
         {
@@ -54,7 +68,7 @@ public class UIhandler : MonoBehaviour
             nameBoxSprite = Resources.Load("9tile", typeof(Sprite)) as Sprite;
         }
         string str = dialog.message;
-        clearText();
+        ClearText();
         dialogStaggering = true;
         StartCoroutine(StaggerText(str, dialog.textDelay));
     }
@@ -79,19 +93,19 @@ public class UIhandler : MonoBehaviour
         }
     }
 
-    public void clearText()
+    public void ClearText()
     {
         dialogText.text = "";
     }
 
-    /// //////////////////////////////////////Sprite Stuff//////////////////////////
+    /////////////////////Low Level Sprite Stuff//////////////////////////
 
-    public void changeImageSprite(string imageName, string filePath)
+    public void ChangeImageSprite(string imageName, string filePath)
     {
         this.gameObject.transform.Find(imageName).gameObject.GetComponent<Image>().sprite = Resources.Load(filePath, typeof(Sprite)) as Sprite;
     }
 
-    public void createImage(string name, string spriteFilePath, Vector2 position) //create a new image, low level, use higher level functions for characters in stead
+    public void CreateImage(string name, string spriteFilePath, Vector2 position) //Create a new image, low level, use higher level functions for characters in stead
     {
         Sprite sprite = Resources.Load(spriteFilePath, typeof(Sprite)) as Sprite;
         Image image = Instantiate(instantiableImage);
@@ -99,7 +113,7 @@ public class UIhandler : MonoBehaviour
         image.gameObject.GetComponent<RectTransform>().anchoredPosition = position;
     }
 
-    public void fadeImage(string imageName, float targetAlpha = 0f, float time = 0.25f)
+    public void FadeImage(string imageName, float targetAlpha = 0f, float time = 0.25f)
     {
         Image image = this.gameObject.transform.Find(imageName).gameObject.GetComponent<Image>();
         Color color = image.color;
@@ -123,4 +137,44 @@ public class UIhandler : MonoBehaviour
             yield return new WaitForSeconds(delay);
         }
     }
+
+    public void MoveImageAbsolute(string imageName, Vector2 absoluteDest, float time)
+    {
+        Image image = this.gameObject.transform.Find(imageName).gameObject.GetComponent<Image>();
+        RectTransform tf = image.GetComponent<RectTransform>();
+
+        Vector2 anchorPos = new Vector2(tf.anchoredPosition.x, tf.anchoredPosition.y);
+        Vector2 relativeDest = absoluteDest - anchorPos;
+        Debug.Log("anchor " + anchorPos);
+        Debug.Log("relative dest " + relativeDest);
+
+        StartCoroutine(StaggerImagePosition(image, relativeDest, time));
+    }
+
+    public void MoveImageRelative(string imageName, Vector2 relativeDest, float time)
+    {
+        Image image = this.gameObject.transform.Find(imageName).gameObject.GetComponent<Image>();
+
+        StartCoroutine(StaggerImagePosition(image, relativeDest, time));
+    }
+
+    IEnumerator StaggerImagePosition(Image image, Vector2 relativeDest, float time)
+    {
+        RectTransform tf = image.GetComponent<RectTransform>();
+        Vector2 currentPos = new Vector2(tf.anchoredPosition.x, tf.anchoredPosition.y);
+
+        float delay = 0.02f; //time between each iteration
+        int stepCount = (int)(time / delay); //number of times to iterate
+        Vector2 posStep = relativeDest / stepCount; //amount to increase/decrease alpha by each iteration
+
+        for (int i = 0; i < stepCount; i++)
+        {
+            tf.position = new Vector3(tf.position.x + posStep.x, tf.position.y + posStep.y, tf.position.z);
+            yield return new WaitForSeconds(delay);
+        }
+    }
+
+    ////////////////////////////////////High Level Sprite Stuff////////////////////////////////////
+
+
 }
