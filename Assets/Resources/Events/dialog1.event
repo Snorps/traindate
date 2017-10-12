@@ -10,6 +10,8 @@ more commenting
 
 [EVENTFILE]  dialog3.event~
 
+[game]  Train Cart Game/Hand Cart Game~
+
 
 [Decision]  
 						//can have multiple events just type all events into the option//
@@ -42,8 +44,8 @@ more commenting
 		
 		
 		[dialog] is structured like this: [dialog] some message; another message; [name] geoff; another message; last message~
-																				^can put name anywhere in message and will give messages that name until it is changed again
-		
+																^can put name anywhere in message and will give messages that name until it is changed again
+		poop
 		[EventFile]  pathOfNextFile~
 		
 		[audio]  pathOfAudioFile~

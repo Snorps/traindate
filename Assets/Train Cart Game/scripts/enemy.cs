@@ -11,8 +11,13 @@ public class enemy : MonoBehaviour {
     public float drag = 0.1f;
     public float deceleration = 0.2f;
 
+    public Texture powerBar;
+
     // Use this for initialization
     void Start () {
+
+        Random.InitState(Time.frameCount);
+
         StartCoroutine(StepDownVelocity());
         StartCoroutine(accelerate());
 	}
@@ -30,11 +35,11 @@ public class enemy : MonoBehaviour {
         while (true)
         {
 
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.01f);
             if (velocity > 0)
             {
 
-                velocity = velocity - (deceleration + velocity * drag);
+                velocity = velocity - ((deceleration + velocity * drag) * 0.01f);
                 if (velocity < 0)
                 {
                     velocity = 0;
@@ -55,11 +60,22 @@ public class enemy : MonoBehaviour {
         while (true)
         {
 
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.1f);
 
             velocity += acceleration * Random.Range(0.8f, 1.2f);
 
         }
+
+    }
+
+    void OnGUI()
+    {
+
+
+        GUI.Box(new Rect(Screen.width - 310, 10, 300, 30), "");
+
+        //GUI.DrawTexture(new Rect(Screen.width - 310 + 300 * velocity / maxVelocity, 10, 300 * velocity / maxVelocity, 30), powerBar);
+        GUI.DrawTexture(new Rect(Screen.width - 310 + (300 - 300 * velocity / maxVelocity), 10, 300 * velocity / maxVelocity, 30), powerBar);
 
     }
 

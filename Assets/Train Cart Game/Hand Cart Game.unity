@@ -192,10 +192,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   velocity: 0
-  acceleration: 0.5
-  maxVelocity: 5
-  drag: 0.1
-  deceleration: 0.2
+  acceleration: 0.45
+  maxVelocity: 4
+  drag: 3
+  deceleration: 0.05
+  powerBar: {fileID: 2800000, guid: 3a5ffc7d2bb889d48a89667636f5bf65, type: 3}
 --- !u!1 &1062182672
 GameObject:
   m_ObjectHideFlags: 0
@@ -315,9 +316,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocity: 0
   acceleration: 0.3
-  maxVelocity: 5
-  drag: 0.2
-  deceleration: 0.1
+  maxVelocity: 4
+  drag: 3
+  deceleration: 0.05
+  powerBar: {fileID: 2800000, guid: 3bfed7cbb630e344fb367f1bf3a4f571, type: 3}
 --- !u!212 &2124565991
 SpriteRenderer:
   m_ObjectHideFlags: 0

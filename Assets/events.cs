@@ -128,7 +128,7 @@ public class AudioEvent : BaseEvent
         file = filePath;
         blocking = block;
 
-        Audio = GameObject.FindGameObjectWithTag("AudioHandler");
+        
 
         End = false;
     }
@@ -144,6 +144,7 @@ public class AudioEvent : BaseEvent
 
         // play audio from file
 
+        Audio = GameObject.FindGameObjectWithTag("AudioHandler");
 
         // check if event will block next event
         if (!blocking)
@@ -199,6 +200,7 @@ public class DecisionEvent : BaseEvent
 
     public override void begin()
     {
+        
         currentSelect = 0;
 
         Debug.Log("selection count");
@@ -290,7 +292,7 @@ public class CharacterChangeEvent : BaseEvent
         charNum = characterNum;
         blocking = block;
 
-        UI = GameObject.FindGameObjectWithTag("Canvas");
+        
 
         End = false;
     }
@@ -304,6 +306,8 @@ public class CharacterChangeEvent : BaseEvent
     // begin is called when event starts
     public override void begin()
     {
+
+        UI = GameObject.FindGameObjectWithTag("Canvas");
 
         // display character
         UI.GetComponent<UIhandler>().changeImageSprite(charNum, file);
@@ -367,8 +371,7 @@ public class DialogEvent : BaseEvent
 
         //nextEventList.Add(nextEvent);
 
-        UI = GameObject.FindGameObjectWithTag("Canvas");
-        Audio = GameObject.FindGameObjectWithTag("Canvas");
+        
 
         //UI = setUI;
         //Audio = setAudio;
@@ -381,6 +384,10 @@ public class DialogEvent : BaseEvent
     // called when event starts
     public override void begin()
     {
+
+        UI = GameObject.FindGameObjectWithTag("Canvas");
+        Audio = GameObject.FindGameObjectWithTag("Canvas");
+
         //Debug.Log("begin is happening");
         UI.GetComponent<UIhandler>().changeText(dialog[currentDialog]);
         Debug.Log(dialog[currentDialog].name);
@@ -502,10 +509,10 @@ public class GameEvent : BaseEvent
         
     }
 
-    public void ReturnToData()
+    public void ReturnToMain()
     {
 
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("ui-test");
 
         End = true;
 
