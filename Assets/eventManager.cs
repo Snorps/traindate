@@ -54,6 +54,7 @@ public class eventManager : MonoBehaviour
         if (currentEvent != null)
         {
 
+            
 
             // check for inputs
 
