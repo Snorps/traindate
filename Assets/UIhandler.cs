@@ -46,9 +46,6 @@ public class UIhandler : MonoBehaviour
         dialogText = this.gameObject.transform.Find("DialogText").gameObject.GetComponent<Text>();
         nameText = this.gameObject.transform.Find("NameText").gameObject.GetComponent<Text>();
         dialogStaggering = false;
-        Hide();
-        Debug.Log(IsHidden());
-        Show();
     }
 
     //Show/Hide UI
