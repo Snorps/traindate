@@ -62,7 +62,7 @@ public class enemy : MonoBehaviour {
 
             yield return new WaitForSeconds(0.1f);
 
-            velocity += acceleration * Random.Range(0.8f, 1.2f);
+            velocity += acceleration * Random.Range(0.6f, 1.4f);
 
         }
 
