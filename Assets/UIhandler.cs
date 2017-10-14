@@ -34,10 +34,9 @@ public class UIhandler : MonoBehaviour
         }
     }
 
-    // public GameObject testNtext;
     Text dialogText;
     Text nameText;
-    Sprite nameBoxSprite;
+
     public bool dialogStaggering;
     public Image instantiableImage;
 
@@ -47,7 +46,25 @@ public class UIhandler : MonoBehaviour
         dialogText = this.gameObject.transform.Find("DialogText").gameObject.GetComponent<Text>();
         nameText = this.gameObject.transform.Find("NameText").gameObject.GetComponent<Text>();
         dialogStaggering = false;
+        Hide();
+        Debug.Log(IsHidden());
+        Show();
     }
+
+    //Show/Hide UI
+    public void Hide()
+    {
+        this.gameObject.SetActive(false);
+    }
+    public void Show()
+    {
+        this.gameObject.SetActive(true);
+    }
+    public bool IsHidden()
+    {
+        return !this.gameObject.activeSelf;
+    }
+
 
     //////////////////////////////Dialog Stuff////////////////////////////////////
     public void OnInput()
@@ -55,7 +72,7 @@ public class UIhandler : MonoBehaviour
         dialogStaggering = false;
     }
 
-    public void ChangeText(Dialog dialog) //to be called by the event manager
+    public void DisplayText(Dialog dialog) //to be called by the event manager
     {
         if (dialog.name == "")
         {
@@ -65,7 +82,7 @@ public class UIhandler : MonoBehaviour
         else
         {
             nameText.text = dialog.name;
-            nameBoxSprite = Resources.Load("9tile", typeof(Sprite)) as Sprite;
+            ChangeImageSprite("NameBox", "9tile");
         }
         string str = dialog.message;
         ClearText();
@@ -96,6 +113,12 @@ public class UIhandler : MonoBehaviour
     public void ClearText()
     {
         dialogText.text = "";
+    }
+
+    public void DisplayDecision(Dialog dialog, List<string> options)
+    {
+        DisplayText(dialog);
+        ChangeImageSprite("DecisionBox", "9tile");
     }
 
     /////////////////////Low Level Sprite Stuff//////////////////////////
