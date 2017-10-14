@@ -7,7 +7,6 @@ using System.IO;
 
 public class eventManager : MonoBehaviour
 {
-    UIhandler UI;
 
     public static eventManager manager;
 
@@ -43,7 +42,7 @@ public class eventManager : MonoBehaviour
         nextEvent = "Assets/Resources/Events/dialog1.event";
         currentEvent = null;
 
-        UI = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIhandler>();
+        //UI = GameObject.FindGameObjectWithTag("Canvas").GetComponent<UIhandler>();
     }
 
     // Update is called once per frame
@@ -58,12 +57,12 @@ public class eventManager : MonoBehaviour
 
             // check for inputs
 
-            if (UI.dialogStaggering)
+            if (UIhandler.UI.dialogStaggering)
             {
                 if (Input.GetMouseButtonDown(0))
                 {
                     // call ui staggering
-                    UI.onInput();
+                    UIhandler.UI.OnInput();
                 }
             }
             else

@@ -180,14 +180,13 @@ public class DecisionEvent : BaseEvent
     private int currentSelect;
     private List<Decision> selection;
 
-    GameObject UI;
     GameObject EManager;
 
     public DecisionEvent(List<Decision> newSelection)
     {
         selection = newSelection;
 
-        UI = GameObject.FindGameObjectWithTag("Canvas");
+        //UI = GameObject.FindGameObjectWithTag("Canvas");
         //EManager = GameObject.FindGameObjectWithTag("EventManager");
 
         End = false;
@@ -207,7 +206,7 @@ public class DecisionEvent : BaseEvent
         Debug.Log(selection.Count);
         // display the options
         //UI.GetComponent<UIhandler>().displaySelection(selection);
-        //UI.Get;Component<UIhandler>().displayCursor(currentSelect);
+        //UIhandler.UI.displayCursor(currentSelect);
     }
 
     public override void OnInput()
@@ -222,7 +221,7 @@ public class DecisionEvent : BaseEvent
             currentSelect %= selection.Count;
             //currentSelect %= selection.Count;
 
-            //UI.GetComponent<UIhandler>().displayCursor(currentSelect);
+            //UIhandler.UI.displayCursor(currentSelect);
         }
 
 
@@ -280,8 +279,6 @@ public class CharacterChangeEvent : BaseEvent
     private string charNum;
     private bool blocking;
 
-    private GameObject UI;
-
     // constructor/destructor
     public CharacterChangeEvent(string filePath, string characterNum, bool block = false)
     {
@@ -307,10 +304,8 @@ public class CharacterChangeEvent : BaseEvent
     public override void begin()
     {
 
-        UI = GameObject.FindGameObjectWithTag("Canvas");
-
         // display character
-        UI.GetComponent<UIhandler>().changeImageSprite(charNum, file);
+        UIhandler.UI.ChangeImageSprite(charNum, file);
 
 
         // check if event is blocking
@@ -354,7 +349,6 @@ public class DialogEvent : BaseEvent
     private int currentDialog;
 
     // pointers to UI/AUDIO objects
-    private GameObject UI;
     private GameObject Audio;
 
 
@@ -385,11 +379,10 @@ public class DialogEvent : BaseEvent
     public override void begin()
     {
 
-        UI = GameObject.FindGameObjectWithTag("Canvas");
         Audio = GameObject.FindGameObjectWithTag("Canvas");
 
         //Debug.Log("begin is happening");
-        UI.GetComponent<UIhandler>().changeText(dialog[currentDialog]);
+        UIhandler.UI.ChangeText(dialog[currentDialog]);
         Debug.Log(dialog[currentDialog].name);
         Debug.Log(dialog[currentDialog].message);
         // UI display first dialog
@@ -416,7 +409,7 @@ public class DialogEvent : BaseEvent
                 // if there is dialog display it
 
                 //Debug.Log("mouse down displaying new poop hehe got 'em");
-                UI.GetComponent<UIhandler>().changeText(dialog[currentDialog]);
+                UIhandler.UI.ChangeText(dialog[currentDialog]);
                 //Debug.Log(dialog[currentDialog].name);
                 // UI display dialog[currentDialog]
             }
