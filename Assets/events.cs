@@ -382,7 +382,9 @@ public class DialogEvent : BaseEvent
         Audio = GameObject.FindGameObjectWithTag("Canvas");
 
         //Debug.Log("begin is happening");
+
         UIhandler.UI.DisplayText(dialog[currentDialog]);
+
         Debug.Log(dialog[currentDialog].name);
         Debug.Log(dialog[currentDialog].message);
         // UI display first dialog
@@ -409,7 +411,9 @@ public class DialogEvent : BaseEvent
                 // if there is dialog display it
 
                 //Debug.Log("mouse down displaying new poop hehe got 'em");
+
                 UIhandler.UI.DisplayText(dialog[currentDialog]);
+
                 //Debug.Log(dialog[currentDialog].name);
                 // UI display dialog[currentDialog]
             }
