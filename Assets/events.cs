@@ -509,6 +509,8 @@ public class GameEvent : BaseEvent
 
         SceneManager.LoadScene("ui-test");
 
+        
+
         UIhandler.UI.Show();
 
         End = true;

@@ -13,26 +13,52 @@ public class enemy : MonoBehaviour {
 
     public Texture powerBar;
 
+
+    public static enemy self;
+
+    void Awake()
+    {
+        
+        if (self == null)
+        {
+            self = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
+    }
+
+
     // Use this for initialization
     void Start () {
+
+        
+	}
+
+    public void StartGame()
+    {
 
         Random.InitState(Time.frameCount);
 
         StartCoroutine(StepDownVelocity());
         StartCoroutine(accelerate());
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () {
 
-        gameObject.transform.Translate(new Vector3(velocity * Time.deltaTime, 0.0f, 0.0f));
-
+        if (TrainCartManager.manager.playing)
+        {
+            gameObject.transform.Translate(new Vector3(velocity * Time.deltaTime, 0.0f, 0.0f));
+        }
 	}
 
     IEnumerator StepDownVelocity()
     {
 
-        while (true)
+        while (TrainCartManager.manager.playing)
         {
 
             yield return new WaitForSeconds(0.01f);
@@ -57,7 +83,7 @@ public class enemy : MonoBehaviour {
     IEnumerator accelerate()
     {
 
-        while (true)
+        while (TrainCartManager.manager.playing)
         {
 
             yield return new WaitForSeconds(0.1f);
