@@ -382,7 +382,9 @@ public class DialogEvent : BaseEvent
         Audio = GameObject.FindGameObjectWithTag("Canvas");
 
         //Debug.Log("begin is happening");
-        UIhandler.UI.ChangeText(dialog[currentDialog]);
+
+        UIhandler.UI.DisplayText(dialog[currentDialog]);
+
         Debug.Log(dialog[currentDialog].name);
         Debug.Log(dialog[currentDialog].message);
         // UI display first dialog
@@ -409,7 +411,9 @@ public class DialogEvent : BaseEvent
                 // if there is dialog display it
 
                 //Debug.Log("mouse down displaying new poop hehe got 'em");
-                UIhandler.UI.ChangeText(dialog[currentDialog]);
+
+                UIhandler.UI.DisplayText(dialog[currentDialog]);
+
                 //Debug.Log(dialog[currentDialog].name);
                 // UI display dialog[currentDialog]
             }
@@ -492,6 +496,8 @@ public class GameEvent : BaseEvent
     public override void begin()
     {
 
+        UIhandler.UI.Hide();
+
         SceneManager.LoadScene(gameScene);
 
     }
@@ -506,6 +512,10 @@ public class GameEvent : BaseEvent
     {
 
         SceneManager.LoadScene("ui-test");
+
+        
+
+        UIhandler.UI.Show();
 
         End = true;
 

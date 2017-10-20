@@ -15,31 +15,55 @@ public class Player : MonoBehaviour {
 
     public Texture powerBar;
 
+    public static Player self;
+
+    void Awake()
+    {
+
+        if (self == null)
+        {
+            self = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+    }
+
+
+
     // Use this for initialization
     void Start() {
 
-        StartCoroutine(StepDownVelocity());
         
+    }
+
+    public void StartGame()
+    {
+        StartCoroutine(StepDownVelocity());
     }
 	
 	// Update is called once per frame
 	void Update () {
 
 
-        if ( (currentKey && Input.GetButtonDown("Right") ) || (!currentKey && Input.GetButtonDown("Left")) )
+        if (TrainCartManager.manager.playing)
         {
-            velocity += acceleration;
-            currentKey = !currentKey;
+            if ((currentKey && Input.GetButtonDown("Right")) || (!currentKey && Input.GetButtonDown("Left")))
+            {
+                velocity += acceleration;
+                currentKey = !currentKey;
+            }
+
+            if (Input.GetMouseButtonDown(1))
+            {
+                GameEvent meh = (GameEvent)eventManager.manager.GetCurrentEvent();
+                meh.ReturnToMain();
+            }
+
+            gameObject.transform.Translate(new Vector3(velocity * Time.deltaTime, 0.0f, 0.0f));
         }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            GameEvent meh = (GameEvent)eventManager.manager.GetCurrentEvent();
-            meh.ReturnToMain();
-        }
-
-        gameObject.transform.Translate(new Vector3(velocity * Time.deltaTime, 0.0f, 0.0f));
-
 	}
 
     
@@ -47,7 +71,7 @@ public class Player : MonoBehaviour {
     IEnumerator StepDownVelocity()
     {
 
-        while (true)
+        while (TrainCartManager.manager.playing)
         {
 
             yield return new WaitForSeconds(0.01f);
